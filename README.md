@@ -102,6 +102,8 @@ AI agents planned, ran and analysed this storm: Grok Bot agents on the box, and 
 
 The desk PC's own limits were not measured.
 
+*(Unofficial verdict from stp: super intelligence on a gaming PC. 😄 The numbers above are the serious part.)*
+
 ## Why
 
 There were three goals:
