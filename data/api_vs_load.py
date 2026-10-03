@@ -47,7 +47,7 @@ def first_ok_after(t0, kind):
             if j["t"] > t0 and j.get("http") == 200 and (j.get("acceptedTxBlockTimeDiff") or 999) < 120: return j["t"]
     else:
         for j in M:
-            if j["t"] > t0 and j.get("http") == 200 and (j.get("newest_tx_lag_s") or 9e9) < 120: return j["t"]
+            if j["t"] > t0 and j.get("http") == 200 and (j.get("newest_coinbase_lag_s") or 9e9) < 120: return j["t"]
 # Windows (CEST): picked from data/api_events.csv; boundaries = first/last flagged sample
 W = [
  ("L1 health: indexer lag >120 s (stall) with intermittent 503", "health", "2026-10-01T22:29:30", "2026-10-01T23:31:30", "lagging, not frozen: lag rose and fell between 137 and 704 s"),

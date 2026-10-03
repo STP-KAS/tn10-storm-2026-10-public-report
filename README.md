@@ -18,7 +18,7 @@ Written Sat 3 Oct 2026, about 18:00 CEST, by Grok Bot on stp's box, from the box
 | Time at ≥100 tx/s | 11.5 h, spread over 20.5 h of legs | same |
 | Does the data show "~5k TPS"? | **Not as unique included transactions.** See [below](#the-5k-tps-question) | |
 | stp's block share | 50–63% while the box miners ran; 25% over the whole first night | `data/block_share_*.csv` |
-| Public API under load | Lagged up to 11.7 min on Thursday, and **froze for about 85 min** on Friday night (HTTP 503). **Back to normal within 2–5 min of each episode's last bad sample**, much better than the 25 Sep test, when the same API's indexer stayed frozen for at least 3 days 15 hours ([below](#api-recovery-vs-earlier-tests)) | `data/api_*.csv` |
+| Public API under load | Lagged up to 11.7 min on Thursday, and **froze for about 85 min** on Friday night (HTTP 503). **Every episode we saw end was back to normal within 2–5 min of its last bad sample** (two ended inside sampler gaps), much better than the 25 Sep test, when the same API's indexer stayed frozen for at least 3 days 15 hours ([below](#api-recovery-vs-earlier-tests)) | `data/api_*.csv` |
 | Mainnet cost of the whole test, same txs at 100 sompi/g | **45,464 KAS** (USD 1,929). At 150 sompi/g: 68,195 KAS (USD 2,894) | `data/mainnet_actual_test.csv` |
 
 ## What we're sure of / what we're not sure of
@@ -31,7 +31,7 @@ Written Sat 3 Oct 2026, about 18:00 CEST, by Grok Bot on stp's box, from the box
 | Box peaks: 4,253 tx/s best 1 min (Fri 01:24:46), 3,717 best 10 min, 2,518 best 60 min (L4, from 21:57) | `data/legs_box.csv` (1-s interpolation, [methodology](methodology.md#3-throughput-method-runners_tpspy)) |
 | Leg 4 ran: Fri 21:52 → Sat 01:06, 14,018,548 included | runner logs, `run/timeline.md` |
 | stp's block share 50–63% while the box miners ran (L1 P2W 60.3%, L2 62.8%, L3 58.1%, L4 52.6%), 25.1% over the first night, 29.7% before the storm | `data/block_share_legs.csv`, `data/block_share_sampler2.csv` |
-| Public API: lag up to 704 s on Thursday; full freeze ≈22:02–23:28 on Friday (HTTP 503 every sample 22:09–23:27); each episode back to normal 2–5 min after its last bad sample | `data/api_events.csv`, `data/api_windows_vs_load.csv` |
+| Public API: lag up to 704 s on Thursday; full freeze ≈22:02–23:28 on Friday (HTTP 503 every sample 22:09–23:27); every episode observed to its end was back to normal 2–5 min after its last bad sample | `data/api_events.csv`, `data/api_windows_vs_load.csv` |
 | Earlier test (25 Sep): the same API's indexer froze at 21:55:38 CEST and was still frozen (HTTP 503) on 29 Sep 12:56 CEST | STP-KAS/tn10-indexer-stall-2026-09 `README.md` l.7–9, l.33–36 ([below](#api-recovery-vs-earlier-tests)) |
 | Mainnet parameters: 10 BPS, 500,000 g block mass, minimum relay fee 100 sompi/g; live normal estimate 100 sompi/g on 3 Oct | rusty-kaspa `01b532e`, PR #1004, `data/sources/api.kaspa.org-info-fee-estimate.json` |
 | Mainnet plain cost of the whole test: 45,464 KAS at 100 sompi/g, 68,195 KAS at 150 | `data/mainnet_actual_test.csv` |
@@ -58,14 +58,14 @@ stp's box node **n0** (rusty-kaspa kaspad 2.1.0, TN10, one 8-core Xeon VM with 1
 
 - **Runners.** At first these were "SMX": signed 1-in-1-out P2PK hops of about 1,752 g. From Thu 21:42 they were "P2W": unsigned 1-in-1-out hops between pay-to-script-hash lane addresses whose redeem script is `push4(id) OP_DROP OP_TRUE`, about 643 g each (`storm-p2w-runner.mjs`). P2W outputs are **anyone-can-spend**. That was fine for throwaway testnet coins. It matters for the mainnet section.
 - **Funding.** The runners were funded from the coinbase outputs of stp's TN10 mining address `kaspatest:qzffl5…`.
-- **Fees.** The feerate was a multiple of n0's own fee estimate. It was 3× and floating until Fri 00:10, a fixed 6,000 sompi/g (30×) for 24 minutes, then a flat 2× capped at 400 sompi/g.
+- **Fees.** The feerate was a multiple of n0's own fee estimate. It was 3× and floating until the pause at Fri 00:10. After the restart it was a fixed 6,000 sompi/g (30×) from 01:09:50 to 01:26:51, when the fee-float guard cut it to 3×. From 01:33:41 it was a flat 2× capped at 400 sompi/g (`feerate.jsonl`, `run/timeline.md`).
 
 ## Why
 
 There were three goals:
 
 - Find the ceiling of one box plus stp's hashrate on TN10.
-- See whether the public explorer/API view of mined blocks breaks during a storm.
+- See whether the public API's view of mined blocks (`api-tn10.kaspa.org`) breaks during a storm. The explorer pages and live block stream were not monitored.
 - Learn what such a storm costs in fees.
 
 ## When
@@ -75,7 +75,7 @@ There were three goals:
 | **L1** | Thu 1 Oct 20:35:18 → Fri 07:52:54 | SMX ramp, then P2W. RAM STOP 23:13, planned pause 00:10–01:10 for an n0 rebuild, **30× fee 01:10–01:27**, box miners halted 01:31:50, then ~300 tx/s all night. RAM STOP 07:52:54 | 29,884,172 | 291,967 |
 | **L2** | Fri 09:07:39 → 10:15 | 6 P2W runners, flat 2× fee. 09:43: 4 RPC connections per runner lifted rate from ~2,260 to ~2,900 tx/s. Disk pause at 19.5 GB from ~09:55. Box rebooted 10:15 | 6,815,084 | 14,811 |
 | **L3** | Fri 11:49:49 → 16:50:47 | Knee test: 6 runners 2,410 tx/s, 7 runners 2,383 (flat), 8 runners **collapsed to 1,165** (12:11, blocks mass-full at 492k, mempool 14k→79k). Disk pause from 13:03:41. Disk STOP 16:50:47 | 8,188,106 | 20,239 |
-| **L4** | Fri 21:52:07 → Sat 01:06:29 | n0 without utxoindex. 6 runners, flat 2×. Best 5 min 3,258 tx/s (23:15). RAM/sink-age back-offs 23:30 and 23:44, then ~0. Hard abort on sink age 10.1 s at 00:29:55. Disk STOP 01:06:29 | 14,018,548 | 34,797 |
+| **L4** | Fri 21:52:07 → Sat 01:06:29 | n0 running without the utxoindex (restarted 17:26; no utxoindex line in the kaspad log). 6 runners, flat 2×. Best 5 min 3,258 tx/s (23:15). RAM/sink-age back-offs 23:30 and 23:44, then ~0. Hard abort on sink age 10.1 s at 00:29:55. Disk STOP 01:06:29 | 14,018,548 | 34,797 |
 | **All** | | | **58,905,910** | **361,814** |
 
 Sources: `run/timeline.md`, runner `rep`/`final` lines, `data/legs_box.csv`. n0 was wiped and resynced on Sat 3 Oct, so a live node query will not show this history. Only the logs do.
@@ -96,7 +96,7 @@ Sources: `run/timeline.md`, runner `rep`/`final` lines, `data/legs_box.csv`. n0 
 - **L1's median is low (327)** because after the box miners stopped at 01:31:50 inclusion fell to ~300 tx/s for five hours, while blocks were only 11–26% full by compute mass (kaspad log, private box report). Before that, with miners on, the 5-min median was 1,757 (`run/final-numbers-2026-10-02.md`).
 - **Ceilings, in the order they were hit:**
   - First, block compute mass. 1,752 g SMX hops fill a 500,000 g block at ~285 txs.
-  - Then per-process submit throughput, about 380–850 tx/s per runner over one RPC connection.
+  - Then per-process submit throughput: about 700–850 tx/s per P2W process on Thursday (timeline 22:25–22:31), and about 380 per runner over one wRPC connection on Friday in L2 (about 480 with 4 connections).
   - Then block mass again once P2W ran at 6–8 runners. In L3, 8 runners pushed blocks to 492k and throughput collapsed.
   - Then disk: each leg ended on a disk pause or a disk STOP.
 
@@ -144,7 +144,7 @@ Source: n0 kaspad log, `Processed N blocks … (M transactions …)` every 10 s,
 | L3 | 58.1% | 56.3% | 1.8% | 41.9% |
 | L4 (independent sampler only; the host sampler's counter read 0 after n0's restart) | **52.6%** | 53.3%† | n/a | ~47% |
 
-†Box miners' accepted submits divided by DAA growth. The "all blocks through n0" column gives 52.6%. The two independent samplers agree within 2 points in L1–L3.
+†Box miners' accepted submits divided by DAA growth. The "all blocks through n0" column gives 52.6%. Where the two samplers cover the same window (L1 whole, L2, L3), they agree within about 1 point: 25.1 vs 26.2%, 62.8 vs 62.1%, 58.1 vs 57.6%.
 
 **The 60–70% claim.** stp's own blocks were 50–63% of TN10 blocks in the windows where his box miners were running. They were **never 70%**. Over the whole first night they were 25%, because the box miners were off after 01:32 and desk blocks through n0 almost stopped after Thu 21:28. **So "60–70%" is not supported. "About 50–63% while the box miners ran, 25% across leg 1" is.**
 
@@ -168,14 +168,14 @@ Probes:
 | **L4** | 97 | **40** | 1 | 41 (22:05 – 23:27) | **4,311 s** (23:21) | 39 | **4,138 s** (23:18) | 0‡ |
 
 - **Thursday (L1): lag, not a freeze.** The indexer fell up to 11.7 min behind. The mined-coinbase view lagged up to 10.9 min. 28 HTTP 503s, 22 of them with the DB reporting `isSynced:false`. Each episode cleared within minutes (timeline below).
-- **Friday night (L4): a full freeze of about 85 minutes (≈22:02–23:28).** From 22:05 the indexer lag grew by exactly ~120 s per 120-s sample. It got no further at all, and every health call from 22:09 to 23:27 returned **HTTP 503** with `isSynced:false`. The newest coinbase shown for stp's mining address froze at the same time: its lag grew from 89 s (22:04) to 4,138 s (23:19) and was back to 9 s at 23:29. Meanwhile n0 kept seeing stp's miners win ~50% of blocks (independent sampler), so the address view was stale, not quiet. ‡The sampler's own `mined_stall` flag missed this, because its "blocks we mined" input came from the host sampler's share counter, which read 0 after n0's Friday restart.
+- **Friday night (L4): a full freeze, about 85 minutes from first lag to recovery (≈22:02–23:28).** The indexer lag started building at 22:01. From about 22:10 the indexer's accepted-tx pointer stopped completely: from 22:23 to 23:21 the lag grew by exactly 120 s per 120-s sample. Every health call from 22:09 to 23:27 returned **HTTP 503** with `isSynced:false`. The newest coinbase shown for stp's mining address froze at the same time. Its lag grew from 89 s (22:03:55) to 4,138 s (23:18:55), the same coinbase id was shown from 22:23 to 23:18, and the lag was back to 9 s at 23:28:55. Meanwhile n0 kept seeing stp's miners win ~50% of blocks (independent sampler), so the address view was stale, not quiet. ‡The sampler's own `mined_stall` flag missed this, because its "blocks we mined" input came from the host sampler's share counter, which read 0 after n0's Friday restart.
 - **Address-level freezes.** The only address read on a schedule was stp's mining address (qzffl5). Its page timed out (20 s) 22 times across all windows, plus the L4 freeze above. Grok Build's wallet qp4jge was read 13 times on Fri 07:52–07:57. One `transactions-count` call needed a retry with a 60-s timeout. The first attempt's result was not saved, so **"qp4jge's view froze" is UNVERIFIED**. No other addresses were probed.
 - **Measurement gaps:** mined-view watcher **Fri 00:06–08:45** (it crashed on restart at 01:00:31, so the 01:24 peak has no mined-view data) and 08:45–12:13. Health probe Fri 00:09–01:00, 08:44–09:07 and 10:13–11:49.
 - n0 itself stayed synced throughout L1 (4,297 of 4,297 RPC polls; sink age max 3.1 s, private box report). In L4 a hard abort fired on a 10.1-s sink age (00:29:55).
 
 #### API recovery vs earlier tests
 
-**This time the public API recovered within hours (measured); in the earlier test it stayed frozen for days (source below). So recovery looked much better this time, though the two tests did not use exactly the same measurements.** In this run the longest episode lasted 86 minutes. Every episode was back to normal (HTTP 200, indexer lag <120 s) within 2–5 minutes of its last bad sample.
+**This time the public API recovered within hours (measured); in the earlier test it stayed frozen for days (source below). So recovery looked much better this time, though the two tests did not use exactly the same measurements.** In this run the longest episode lasted 86 minutes. Every episode we could watch to its end was back to normal (HTTP 200, lag <120 s) within 2–5 minutes of its last bad sample. Two Thursday-night episodes ended inside sampler gaps. The health probe was back to normal by 01:00 at the latest.
 
 **What we measured, and what we didn't.** This run's numbers come from the **REST API** (`api-tn10.kaspa.org`: `/info/health` every 120 s, and the qzffl5 address page every 300 s). We **did not monitor the TN10 stream/explorer view** (live block stream, websocket, explorer pages). So none of this says how the explorer behaved.
 
@@ -196,8 +196,10 @@ Probes:
 
 How this lines up with load:
 
-- **Every stall or 503 episode happened while load was high.** Box load was about 1,000–2,500 tx/s and n0 processed was 2,700–6,600 tx/s. There were none in the pre-storm baseline, none during the L1 night at ~300 tx/s, and none on Saturday after the storm (0 stall samples in 505, max lag 14 s).
+- **Every stall episode (indexer or coinbase view more than 120 s behind) happened while load was high.** Averaged over each episode, box load was about 950–2,450 tx/s and n0 processed was 2,700–6,600 tx/s. There were no stalls in the pre-storm baseline, none during the L1 night at ~300 tx/s, and none on Saturday after the storm (0 stall samples in 505, max lag 14 s).
+- Single HTTP 503s with the indexer up to date (lag ≤8 s) also happened outside load, e.g. Fri 07:46 and Sat 03:59, along with 502s on Saturday. These are not stalls.
 - **It does not line up exactly with the peaks:**
+  - The first Thursday stall sample (22:29:30) came as an **outside** burst from about 22:29:20 filled blocks by storage mass. Our own inclusion dropped during that burst: 339 tx/s in the 22:30 5-min bin (`data/box_5min.csv`) and ~196 tx/s for 22:32–22:36 (timeline l.29–30). So other senders' load counted, not just ours.
   - The longest Thursday 503 run (23:03–23:29) came while our load was *falling*: the RAM STOP was at 23:13, and box load averaged 951 tx/s against 1,920 the hour before. It trailed the busiest hour rather than matching it. The busiest unique hour network-wide was Thu 22:00 (2,732/s on the indexer).
   - The single highest box minute (Fri 01:24:46, during the 30× fee burst) produced only an 8-minute blip with lag ≤163 s.
   - The Friday freeze did not follow one peak. It started about 5 min after L4 load came on (21:57) and lasted almost the whole loaded phase. The L4 peak (23:15) fell inside it. It ended at 23:29, as our load was tapering (2,125 → 1,537 tx/s) and about 10 min before our runners stopped.
@@ -235,28 +237,28 @@ What the logs do show is that n0's mempool was crowded and fee-competitive at th
 | Window (CEST) | n0 mempool median / max (txs) | n0 fee estimate "normal", median (max) sompi/g | Evicted for higher feerate |
 |---|---:|---:|---:|
 | Pre-storm baseline | 0 / 216 | 100 (100) | 0 |
-| L1, box miners on (20:35–01:32) | 3,038 / 99,803 | 195.7 (6,415) | 59,081 (01:06–01:10, as the 30×-fee runners started) |
+| L1, box miners on (20:35–01:32) | 3,038 / 99,803 | 195.7 (6,415) | 59,081 (01:06:36–01:07:36, while the feeder refilled lanes just before the 30× restart) |
 | L1 peak incl. 30× fee burst (01:10–01:30) | 64,992 / 77,480 | 1,541 (2,328) | 0 |
-| L1 night, box miners off (01:32–07:53) | 71,498 / 99,992 | 193.9 (24,145) | **427,059** (01:32–02:12) |
+| L1 night, box miners off (01:32–07:53) | 71,498 / 99,992 | 193.9 (24,145) | **427,059** (01:33–02:12) |
 | L4 loaded (21:57–23:38) | 17,140 / 30,826 | 194.2 (212) | 0 |
 | After the storm (Sat 01:06–17:00) | 0 / 13,757 | 100 (730) | 0 |
 
-- During the loaded legs, n0's "normal" estimate sat at about 2× the 100 sompi/g floor. During the 30× burst it went far higher. A third-party tx paying the floor would have queued behind tens of thousands of higher-feerate storm txs.
-- In total n0 evicted **486,140** txs "in favor of incoming higher feerate transactions" on Fri 01:06–02:12 (kaspad log). Most of that came *after* the box miners stopped, not at the throughput peak. We can't tell whose txs were evicted; most were probably ours.
+- During the loaded legs, n0's "normal" estimate sat at about 2× the 100 sompi/g floor. During the 30× burst it went far higher. A third-party tx paying the floor would have queued behind tens of thousands of higher-feerate storm txs *(inference)*.
+- In total n0 evicted **486,140** txs "in favor of incoming higher feerate transactions" on Fri 01:06–02:12 (kaspad log). Most of that came *after* the box miners stopped, not at the throughput peak. We can't tell whose txs were evicted; most were probably ours *(inference)*.
 
 ### 5. Limits of this test (honest list)
 
 - **One box.** 8 vCPU, 15 GB RAM, 126 GB disk, shared by n0, the box miners (nice 19), the runners and the samplers. The load average reached ~28–32 on 8 cores in L2 (timeline 09:19, 09:31).
 - **Caps:**
   - Block compute mass: SMX filled blocks at ~285 txs. P2W at 6–8 runners pushed blocks to 492–499k g; in L3, adding the 8th runner made throughput fall.
-  - Node submit throughput: ~380 tx/s per runner over one wRPC connection, ~480 with 4 connections.
+  - Submit throughput per process: ~700–850 tx/s per P2W process on Thursday, ~380 per runner over one wRPC connection on Friday (L2), ~480 with 4 connections.
 - **RAM:**
-  - Two storm-watch STOPs at RAM below 1 GB: Thu 23:13:34 (1,009 MB; a read-only scan script contributed) and Fri 07:52:54 (754 MB; most likely a large outside read of qp4jge's mempool entries).
+  - Two storm-watch STOPs at RAM below 1 GB: Thu 23:13:34 (1,009 MB; a read-only scan script contributed) and Fri 07:52:54 (754 MB; most likely a large outside read-only probe for qp4jge, timeline 08:08 *(inference)*).
   - The coinbase feeder had to be restarted on RSS more than 10 times.
   - **n0 was OOM-killed at Fri 00:50** by one `getUtxosByAddresses` call on stp's mining address, which holds a huge number of coinbase UTXOs (kernel: kaspad anon-rss 9.46 GB).
 - **Disk.** 4.5–7 GB/h at load. Every leg ended on disk: L1 at the 25 GB self-pause, L2 at 19.5 GB, L3 and L4 at the 21 GB pause and then a STOP after 15 min under 19 GB. The Fri 08:09 pruning low point was 9.15 GB.
-- **Fee float feedback loop.** "3× the node's normal estimate" chased its own backlog: up to 19,244 sompi/g (Thu 23:56). The fixed 30× burned 122,320 tKAS (42% of L1 fees) in 24 minutes. A flat 2× then lost to outside senders while n0's normal estimate hit 24,145 (Fri 01:51).
-- **Pruning windows.** The pruning-point move (Fri 07:51–08:30, and around 19:34–20:13) eats disk and RAM. Starts were blocked around 18:55–20:15.
+- **Fee float feedback loop.** "3× the node's normal estimate" chased its own backlog: up to 19,244 sompi/g (Thu 23:56). The 30× runner segment (01:09:58–01:33:41; 6,000 sompi/g until 01:26:51, then 3×) cost 122,320 tKAS, 42% of L1 fees, for 11.5% of L1's included txs (private box report). A flat 2× then lost to outside senders while n0's normal estimate hit 24,145 (Fri 01:51).
+- **Pruning windows.** TN10 pruning-point moves happen about every 12 h. The kaspad log shows them Thu 19:36–20:13, Fri 07:53–08:30 and Fri 19:37–20:22, and they eat disk and RAM. The Friday-evening leg was held outside an 18:55–20:15 pruning window (`run/GO-next-leg.md`).
 - **Own hashrate decided inclusion.** After the box miners stopped (Fri 01:31:50), our inclusion fell to ~300 tx/s with blocks mostly empty *(inference: other TN10 miners included few of our txs)*.
 
 ### 6. KNS during the storm (separate bot)
@@ -356,7 +358,7 @@ All rate × shape combinations, 1 h and 24 h. The 30 min to 24 h rows for every 
 
 1. **Tx shape and mass.** Mass is the TN10 measurement: P2W 644.8 g average incl. funding txs (runner `massH`/`massF`), SMX 1,751.9 g (from fee ÷ submitted ÷ feerate). Mainnet uses the same mass formula (`MAINNET_PARAMS`: 1 g/byte, 10 g/script-pubkey byte, 1,000 g/sigop).
 2. **Anyone-can-spend lanes.** P2W lanes are anyone-can-spend. On mainnet anyone watching could take the coins sitting in the lanes. This report prices the fee only. An attacker who wants to avoid that would use signed txs: 2.7× the mass and cost, and capped at 2,854 tx/s.
-3. **Policy.** Mainnet mempool policy accepts these shapes the same way TN10 kaspad 2.1.0 did. The minimum relay fee applies to compute/transient mass (PR #1004).
+3. **Policy.** Mainnet mempool policy accepts these shapes the same way TN10 kaspad 2.1.0 did. The minimum relay fee is charged on the larger of compute mass and normalized transient mass; storage mass is not charged ([`mining/src/mempool/check_transaction_standard.rs`](https://github.com/kaspanet/rusty-kaspa/blob/01b532e8b553523216471682649693af92f0fd16/mining/src/mempool/check_transaction_standard.rs) l.67–76).
 4. **Price.** A flat price for the whole duration: Kraken last trade at 17:58 CEST Sat 3 Oct. A large buy of KAS to fund the fees would move it. Not modelled.
 5. **Fees.** No fee recapture and no fee-market escalation (deliberate, see above). Coins in lanes are not spent, only fees. The lane float itself (tens of thousands of KAS on TN10) is capital, not cost.
 6. **Rates.** "Peak" and "sustained" are box-only rates from one 8-core box. A better-provisioned sender could go higher, up to the capacity column.
@@ -374,7 +376,7 @@ All rate × shape combinations, 1 h and 24 h. The 30 min to 24 h rows for every 
 | Leg 3: knee 6 runners 2,410/s; 8 runners 1,165; mass 318k→492k; disk pause 13:03; STOP 16:50 | Timeline and runner logs agree; STOP_SET 16:50:47 | ✅ |
 | Leg staged at 17:31 | **It ran**: Fri 21:52–Sat 01:06, 14.0M included, best 60 min 2,518/s | ✅ (new in this report) |
 | API froze/lagged on some addresses | qzffl5 view lagged 10.9 min (Thu) and **froze ~85 min (Fri ≈22:02–23:28)**; qp4jge: one slow call, result not saved | ✅ for qzffl5; **UNVERIFIED** for qp4jge |
-| API freeze only around the heaviest load, recovered fairly quickly (stp) | All episodes were under high load, but not exactly at the peaks (see table). Each recovered 2–5 min after its last bad sample; longest 86 min | ✅ recovery; ⚠️ "at the peaks" only roughly |
+| API freeze only around the heaviest load, recovered fairly quickly (stp) | All stall episodes were under high load, including other senders' load, but not exactly at our peaks (see table). Each one observed to its end recovered 2–5 min after its last bad sample; the longest lasted 86 min | ✅ recovery; ⚠️ "at the peaks" only roughly |
 | Earlier test: freeze lasted days (stp) | REST API indexer frozen ≥3 d 15 h from 25 Sep 21:55 CEST (tn10-indexer-stall-2026-09 README l.7–9, l.30, l.36). Stream/explorer freeze: no file | ✅ for the REST API; **UNVERIFIED** for the stream/explorer |
 | KNS 18,524 names, ownership verified | 9,509 + 8,258 + 757 verified on api.knsdomains.org | ✅ |
 | qp4jge 10.66M txs | Value from a logged API call; the raw response was not saved | ⚠️ attributed |
@@ -415,7 +417,8 @@ Each item fixes a gap from this run.
   - `data/runner1-4.out`, `data/p2w1-8.out`
   - `data/host.jsonl`
   - `data/api-health-min.jsonl`, `data/api-mined-watch.jsonl`, `public-api-calls.log`
-  - `run/final-numbers-2026-10-02.md`
+  - `run/final-numbers-2026-10-02.md`, `run/GO-next-leg.md`
+  - `feerate.jsonl` (n0 fee estimate and our feerate every 30 s)
   - n0 kaspad log `rusty-kaspa.log`
   - `artifacts/kaspa-tn10/share.csv` (independent share sampler)
   - `artifacts/kns-tn10/*`
@@ -433,7 +436,7 @@ Each item fixes a gap from this run.
 - **~5k TPS:** not reached as unique included transactions. Only meters that double-count (n0 "processed") or single 10-s steps get there or past.
 - **What limited it:** block mass, per-connection submit rate, and above all one box's disk and RAM. Every leg ended on a disk or RAM guard. Our own hashrate decided how many of our txs got in.
 - **Mining share:** stp's share was 50–63% while his box miners ran, and 25% over the first night. 60–70% is not supported. On TN10 an estimated ~57% of the fees came back to him.
-- **The public API is the weak point, but it recovered much better than last time.** Thursday it lagged up to ~12 min. Friday night its indexer froze for about 85 minutes (HTTP 503) and the address view of stp's mining address froze with it, while n0 stayed synced. Every episode came under high load (not exactly at the peaks) and cleared within 2–5 minutes of its last bad sample. In the 25 Sep test the same API's indexer stayed frozen for at least 3 days 15 hours. The stream/explorer view was not monitored in either test.
+- **The public API is the weak point, but it recovered much better than last time.** Thursday it lagged up to ~12 min. Friday night its indexer froze for about 85 minutes (HTTP 503) and the address view of stp's mining address froze with it, while n0 stayed synced. Every stall came under high load (not exactly at our peaks). Each one we could watch to its end cleared within 2–5 minutes of its last bad sample. In the 25 Sep test the same API's indexer stayed frozen for at least 3 days 15 hours. The stream/explorer view was not monitored in either test.
 - **Mainnet, plain cost with nothing back:**
   - The whole test at 100 sompi/g is 45,464 KAS (~USD 1,929). At 150 sompi/g it is 68,195 KAS (~USD 2,894).
   - Holding the measured 1-min peak with the same light txs for 24 h is ~236,927 KAS (USD ~10,053) at normal, or ~355,390 KAS (USD ~15,079) at priority.
