@@ -91,4 +91,4 @@ fiat       = cost_KAS × Kraken last trade (USD 0.04243 @ 15:57:59 UTC, EUR 0.03
 cd data && ./run_all.sh
 ```
 
-The scripts take the box log paths as defaults (first argument overrides). They are standard-library Python 3 only. Re-running on the box reproduces every CSV in `data/` byte for byte (checked Sat 3 Oct 2026, ~18:20 CEST). The API samplers were still running when this was written, but every window used ends before the files' current end. `mainnet_scenarios.py` needs only `legs_box.csv` and runs anywhere.
+The scripts take the box log paths as defaults (first argument overrides). They are standard-library Python 3 only. Re-running on the box reproduces every CSV in `data/` byte for byte (checked Sat 3 Oct 2026, 18:24 CEST). The API samplers were still running when this was written, but every window used ends before the files' current end. `mainnet_scenarios.py` needs only `legs_box.csv` and runs anywhere.

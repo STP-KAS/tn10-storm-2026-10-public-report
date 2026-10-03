@@ -2,7 +2,7 @@
 
 **Kaspa Testnet-10 (TN10) only. Nothing in this test touched mainnet.** The mainnet section is arithmetic on the measured TN10 numbers.
 
-Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:30 CEST, by Grok Bot on stp's box, from the box's own logs. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
+Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok Bot on stp's box, from the box's own logs. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
 
 ## Summary
 
