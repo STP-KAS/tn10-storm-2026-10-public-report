@@ -1,0 +1,6 @@
+meter,t_utc,per_second,lanes,feerate,orphans,source_file,note
+highest_printed_scale_minute,2026-10-02T19:33:00.255Z,2795.6,5164/8932,150,0,status.log,printed scale_minute included/s
+highest_printed_scale_minute_during_L4,2026-10-02T20:59:27.945Z,2698.6,5027/8932,286,0,status.log,printed scale_minute included/s
+computed_60s_vcc_rise,2026-10-02T20:57:06.782Z,2837.3,,,,scale-heart.log,"cumulative vcc rise over 60914 ms; computed, not a printed rate"
+computed_60s_vcc_rise_tag_a,2026-10-02T22:21:02.790Z,1046.9,,,,scale-heart-a.log,overlaps the other tagged heart file; not added to it
+computed_60s_vcc_rise_tag_b,2026-10-02T22:21:03.115Z,1002.7,,,,scale-heart-b.log,overlaps the other tagged heart file; not added to it

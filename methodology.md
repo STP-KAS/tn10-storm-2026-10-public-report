@@ -12,7 +12,7 @@ All times are CEST (UTC+2) unless marked UTC. "Box" = stp's single test machine 
 | `host.jsonl` (host sampler, 15–30 s) | Blocks added on n0 by payout address and miner user agent | Block share (`block_share.py`) |
 | `share.csv` (TN10 ops' independent sampler, 5 min) | n0 DAA score, cumulative box-miner "Block submitted successfully" lines, cumulative blocks submitted through n0 | Block share cross-check, only share source for L4 (`block_share_sampler2.py`) |
 | `api-health-min.jsonl`, `api-mined-watch.jsonl` | `/info/health` every 120 s; newest coinbase of stp's mining address (`qzffl5…`) every 300 s | Public API behaviour (`api_view.py`) |
-| Desk `sender.jsonl` (copy in the private analysis repo) | Per batch: submitted / node-acked / rejected | Desk load, ends Thu 23:23 (`desk_sender.py`) |
+| Desk `sender.jsonl` (copy in the private analysis repo) | Per batch: submitted / node-acked / rejected | Published copy ends Thu 23:23 (`desk_sender.py`). The later full-file sum is §9 |
 | `run/timeline.md`, `run/final-numbers-2026-10-02.md` | Operator event log and earlier analysis | Leg boundaries, events, cross-checks |
 | rusty-kaspa `01b532e` (v2.1.0), PR #1004 | Mainnet params, mass rules, minimum relay fee | Mainnet section |
 | `api.kaspa.org/info/fee-estimate`, `/info/price`, `/info/blockdag`; Kraken public ticker | Live mainnet feerate, price, DAA rate | Mainnet section (`data/sources/`) |
@@ -81,7 +81,7 @@ fiat       = cost_KAS × Kraken last trade (USD 0.04243 @ 15:57:59 UTC, EUR 0.03
 
 - One box, one node. Box rates are a floor for what a better-provisioned sender could do, not a network maximum.
 - n0 was wiped and resynced on Sat 3 Oct; the history exists only in the logs.
-- The desk log copy ends Thu 23:23. Grok Build's numbers to Fri 09:40 are quoted, not recomputed.
+- The box copy of the desk log ends Thu 23:23. The desk file was summed later; see §9. The `accepted` field is a submit result.
 - Indexer counts are unreliable during the L4 freeze.
 - TN10 mining share changed which fees came back to stp; it does not change gross cost, and it does not exist for a mainnet sender without hashrate.
 
@@ -91,4 +91,17 @@ fiat       = cost_KAS × Kraken last trade (USD 0.04243 @ 15:57:59 UTC, EUR 0.03
 cd data && ./run_all.sh
 ```
 
-The scripts take the box log paths as defaults (first argument overrides). They are standard-library Python 3 only. Re-running on the box reproduces every CSV in `data/` byte for byte (checked Sat 3 Oct 2026, 18:24 CEST). The API samplers were still running when this was written, but every window used ends before the files' current end. `mainnet_scenarios.py` needs only `legs_box.csv` and runs anywhere.
+The scripts take the box log paths as defaults (first argument overrides). They are standard-library Python 3 only. Re-running on the box reproduces the CSVs that `run_all.sh` writes, byte for byte (checked Sat 3 Oct 2026, 18:24 CEST, before the desk tables were added). The API samplers were still running when this was written, but every window used ends before the files' current end. `mainnet_scenarios.py` needs only `legs_box.csv` and runs anywhere. `desk_check.py` is separate. `run_all.sh` does not write the desk tables.
+
+## 9. Desk check (`desk_check.py`)
+
+Run later on Sat 3 Oct 2026 on the desk. Inputs are the sender log, the public-node runner log directory, and the local P2W log directory. Raw logs are not published.
+
+- **Sender batches.** Sum `submitted`, `accepted`, and `rejected` per CEST hour. The cut row keeps lines with `t` at or before `2026-10-02T07:40:33.393Z`, which is the end timestamp of the private desk read. Output: `desk_batch_hours.csv`.
+- **`chainPerSec`.** Count of non-null samples, null samples, and the maximum, with that line's timestamp. Reported in the README. The field is all accepted ids between two sink samples on one node.
+- **Public-node peaks.** For each runner log, the status line with the highest `accepted_tx_s`. Kept when that value is at least 5,000. Output: `desk_submit_ok_peaks.csv`.
+- **Long run.** In `x10-20261003-010247.log`, count of status lines where `accepted_total` falls, the last line with `accepted_tx_s` above 0, and the last status line. Output: `desk_long_run.csv`.
+- **Final lines.** `ev:final` objects with transaction ids removed. Output: `desk_final_lines.csv`.
+- **P2W.** Highest printed `scale_minute` `included/s` overall and inside the L4 window (Fri 21:52:07 to Sat 01:06:29). Also the largest cumulative `vcc` rise over a sample pair at least 60 s apart in `scale-heart.log` and in the two tagged heart files. The tagged files overlap and are not added. Output: `desk_p2w_peaks.csv`.
+
+The script refuses to write a CSV that contains a long hex token or a wallet address.

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Grok Build desk sender (stp's desk PC -> public TN10 wRPC nodes), from desk/sender.jsonl in the private
 analysis repo. Each 'batch' line is one batch: submitted / accepted (= node accepted submitTransaction,
-NOT seen in a block) / rejected. The copy in the repo ends Thu 1 Oct 23:23 CEST; Grok Build's own read of
-its full desk log (to Fri 2 Oct 09:40 CEST) is quoted in the README, not recomputed here.
+NOT seen in a block) / rejected. The copy in the repo ends Thu 1 Oct 23:23 CEST.
+The full desk log was summed later in desk_batch_hours.csv. This script still sums whatever file it is given.
+Its TOTAL label stays the Thu 23:23 copy.
 Output: data/desk_sender_summary.csv (per hour, CEST)
 """
 import json, csv, os, sys, datetime as dt, collections

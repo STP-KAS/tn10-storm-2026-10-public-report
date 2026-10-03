@@ -2,7 +2,7 @@
 
 **Kaspa Testnet-10 (TN10) only. Nothing in this test touched mainnet.** The mainnet section is arithmetic on the measured TN10 numbers.
 
-Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok Bot on stp's box, from the box's own logs. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
+Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok Bot on stp's box, from the box's own logs. A desk check was added later the same day from the desk's own logs. It does not replace the box figures. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
 
 ## Summary
 
@@ -17,6 +17,7 @@ Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok
 | Best 10 s, box only (bursty, indicative) | 4,700 tx/s (Fri 09:52:59) | same |
 | Time at ≥100 tx/s | 11.5 h, spread over 20.5 h of legs | same |
 | Does the data show "~5k TPS"? | **Not as unique included transactions.** See [below](#the-5k-tps-question) | |
+| Desk sender `accepted` field, recomputed | 15,697,431 through Fri 09:40:33; 15,743,212 through Fri 12:03:07 | `data/desk_batch_hours.csv`. Submit result, not a virtual-chain inclusion |
 | stp's block share | 50–63% while the box miners ran; 25% over the whole first night | `data/block_share_*.csv` |
 | Public API under load | Lagged up to 11.7 min on Thursday, and **froze for about 85 min** on Friday night (HTTP 503). **Every episode we saw end was back to normal within 2–5 min of its last bad sample** (two ended inside sampler gaps), much better than the 25 Sep test, when the same API's indexer stayed frozen for at least 3 days 15 hours ([below](#api-recovery-vs-earlier-tests)) | `data/api_*.csv` |
 | Mainnet cost of the whole test, same txs at 100 sompi/g | **45,464 KAS** (USD 1,929). At 150 sompi/g: 68,195 KAS (USD 2,894) | `data/mainnet_actual_test.csv` |
@@ -35,12 +36,18 @@ Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok
 | Earlier test (25 Sep): the same API's indexer froze at 21:55:38 CEST and was still frozen (HTTP 503) on 29 Sep 12:56 CEST | STP-KAS/tn10-indexer-stall-2026-09 `README.md` l.7–9, l.33–36 ([below](#api-recovery-vs-earlier-tests)) |
 | Mainnet parameters: 10 BPS, 500,000 g block mass, minimum relay fee 100 sompi/g; live normal estimate 100 sompi/g on 3 Oct | rusty-kaspa `01b532e`, PR #1004, `data/sources/api.kaspa.org-info-fee-estimate.json` |
 | Mainnet plain cost of the whole test: 45,464 KAS at 100 sompi/g, 68,195 KAS at 150 | `data/mainnet_actual_test.csv` |
+| Desk batch `accepted` through Fri 09:40:33.393 is 15,697,431 (submitted 16,972,123, rejected 1,274,692). Whole file through Fri 12:03:07: 15,743,212 (submitted 17,415,510, rejected 1,672,298) | `data/desk_batch_hours.csv` |
+| Desk P2W highest printed one-minute virtual-chain match rate is 2,795.6 at Fri 21:33:00. During L4 the highest printed line is 2,698.6 at Fri 22:59:27 | `data/desk_p2w_peaks.csv` |
+| Highest public-node `accepted_tx_s` status line is 24,249 at Fri 15:35:44. That field is a submit-ok rate | `data/desk_submit_ok_peaks.csv` |
 
 **Not sure (estimates, inferences, unverified or quoted):**
 
 | Item | Why it is not verified |
 |---|---|
-| Desk numbers to Fri 09:40 (16.97M submits, 15.70M acks, 1.27M rejects) | **Quoted** from Grok Build's own read of its desk log. The copy we have ends Thu 23:23; an ack is not inclusion |
+| How many of those desk `accepted` values were new transactions | The runner counts an already/duplicate/exists submit error as success. The sum is sure. The split is not |
+| A desk submit-ok rate above 5,000 as included transactions | The highest status line is 24,249/s. That field sums worker submit-ok rates. It is above this report's per-second ceilings (7,754/s light P2W, 2,854/s signed). See the [desk check](#desk-check-later-the-same-day) |
+| Desk fee total, or a desk inclusion total, for the public-node runner | In the longest log `accepted_total` drops on 153 status lines. Those fields were not used as totals. Two `final` lines are quoted as lines only |
+| That L4's other senders were the desk's transactions | The desk was logging during L4. Transaction ids were not matched to n0 |
 | ~57% of fees came back to stp (204,740 tKAS; net ≈157k tKAS) | **Estimate**: fees × block share per window. Coinbase outputs were not summed |
 | qp4jge's API view froze | **UNVERIFIED**: one slow call, the response was not saved |
 | qp4jge 10.66M txs | **Attributed**: value from a logged API call, raw response not saved |
@@ -121,10 +128,10 @@ Source: n0 kaspad log, `Processed N blocks … (M transactions …)` every 10 s,
 
 **Grok Build's desk sender** (stp's desk PC → public TN10 nodes; wallet qp4jge):
 
-- Grok Build's own read of its full desk log (`analysis/desk-public-read-2026-10-02.md` in the private analysis repo) covers Thu 20:38 to Fri 09:40. It reports 16,972,123 submits, 15,697,431 node acks and 1,274,692 rejects (7.5%). An ack means a node accepted `submitTransaction`. It does not mean the tx was included.
-- The part of that log in the repo, to Thu 23:23, sums to 8,276,238 / 7,686,305 / 589,933 (`data/desk_sender_summary.csv`).
+- The desk file behind that read was summed again on Sat 3 Oct. Batch lines with `t` at or before Fri 09:40:33.393 give the same three integers: 16,972,123 submitted, 15,697,431 in the `accepted` field, 1,274,692 rejected. The whole file, through Fri 12:03:07, is 17,415,510 / 15,743,212 / 1,672,298. Detail is in the [desk check](#desk-check-later-the-same-day). The `accepted` field is a submit result.
+- The part of that log in the repo, to Thu 23:23, sums to 8,276,238 / 7,686,305 / 589,933 (`data/desk_sender_summary.csv`). The Thu 20:00, 21:00 and 22:00 rows match the full-file hours. The Thu 23:00 row there is only the part before the copy ended.
 - The public API reported 10,659,746 txs for qp4jge at Fri 07:55. That value is recorded in notes, not as a raw response, so it is **attributed, not re-verified**.
-- The desk's own numbers for the Friday-evening run (L4) are **not on the box**. See "Missing" below.
+- Friday evening on the desk is in the desk check. It is not an inclusion total, and it is not added to the box figures.
 
 ### 3. Fees, block share, and why the TN10 cost was lower than the gross fee
 
@@ -266,6 +273,59 @@ What the logs do show is that n0's mempool was crowded and fee-competitive at th
 - **Thu 1 Oct:** 18,524 names in three runs (9,509 + 8,258 + 757), 0 failures. **Ownership was verified for all 18,524** against `api.knsdomains.org/tn10` on Fri 12:10–12:16, with 0 API errors (`artifacts/kns-tn10/*-2026-10-01/ownership-verification*.json`).
 - **Fri 2 Oct:** 58 names (09:34) plus 11,400 names (11:49–12:53, during L3), 0 failures, 714.6 tKAS fees (`funded-2026-10-02/final-summary.json`). Ownership of the Friday names was not verified here.
 
+## Desk check (later the same day)
+
+The box copy of the desk sender log ends Thu 23:23. The desk file was read in full later on Sat 3 Oct. Raw logs are not in this repo. They contain transaction ids. `data/desk_check.py` rebuilds the tables below from the sender log, the public-node runner logs, and the local P2W logs. It is not part of `run_all.sh`.
+
+### Sender log
+
+Batch lines run from Thu 20:38:37 to Fri 12:03:07 (`data/desk_batch_hours.csv`).
+
+| Cut | Submitted | `accepted` field | Rejected | Batches |
+|---|---:|---:|---:|---:|
+| Through Fri 09:40:33.393 | 16,972,123 | 15,697,431 | 1,274,692 | 3,565 |
+| After that timestamp | 443,387 | 45,781 | 397,606 | 70 |
+| Whole file | 17,415,510 | 15,743,212 | 1,672,298 | 3,635 |
+
+The first row matches the private desk read this report had quoted. The 70 batch lines after the cut are mostly rejects. In the Fri 11:00 and Fri 12:00 hours the `accepted` field is 0.
+
+The runner counts an already/duplicate/exists submit error as success, and the `accepted` field includes that success. How many of the 15,697,431 were that case was not counted.
+
+`chainPerSec` is set on 2,810 batch lines and null on 825. It is every accepted id one node returned between two sink samples, divided by the seconds between those samples. It counts every sender that node saw. The highest value in the file is 4,349, at Fri 01:19:25. That is one sample. It is not a desk inclusion rate.
+
+A public-node dry line at Fri 11:40:21 (`run-20261002-114019.log`) is earlier than this file's last batch. The two logs overlap in that stretch. Their counts were not added. The lines from that overlap are not in the peak table below. Their `accepted_tx_s` stays under 5,000.
+
+### Public-node runner
+
+`accepted_tx_s` on a status line sums each worker's submit-ok rate. Seventeen logs have a peak at or above 5,000 (`data/desk_submit_ok_peaks.csv`). The highest is **24,249** at Fri 15:35:44, in `run-20261002-153336.log`, with the mempool field at 991,732 and 24 workers alive. One L4 line in that table is 18,573 at Sat 00:42:24. 24,249 submit-oks in one second is above this report's per-second ceilings: 7,754/s for the light P2W shape and 2,854/s for the measured signed shape. These lines are a submit rate.
+
+In `x10-20261003-010247.log`, `accepted_total` drops on 153 status lines. `spent_tkas` moves with it. Neither was used as a total. The last status line with `accepted_tx_s` above 0 is Sat 02:29:14 (value 2, mempool 1,000,000). The last status line is Sat 06:35:51, `accepted_tx_s` 0, mempool 1,000,000 (`data/desk_long_run.csv`). That mempool value is `getInfo` on one socket. It is one node. It is not the REST indexer. The box runners had already stopped at Sat 01:06.
+
+Two logs contain an `ev:final` line (`data/desk_final_lines.csv`):
+
+- Fri 11:56:08, `spent_tkas` 18.7793, stopped "only reserve left", `accepted_total` 7,408. Later peak lines the same day show the runner still submitting. This line is not the end of the wallet.
+- Fri 15:38:03, `accepted_total` 2,554,846, `avg_tx_s` 9,640, `spent_tkas` 11,430.5492, stopped by a STOP file. `avg_tx_s` is the harvested submit-ok counter divided by the run's seconds. The runner also adds the fee when it marks a submit ok, including a submit the node said was already in the mempool. This line was not added to the box fee of 361,814 tKAS and not added to the mainnet bill.
+
+`final-report.json` was not on disk at this read. No total was taken from a missing file.
+
+### Local P2W scale
+
+The scale path subscribes to the desk's local node. It counts a transaction when that node's virtual-chain-changed event contains the txid. `data/desk_p2w_peaks.csv`:
+
+- Highest printed `scale_minute` line: **2,795.6** per second at Fri 21:33:00 (lanes 5,164/8,932, feerate 150, orphans 0). That minute is between L3 and L4.
+- Highest printed line during L4: **2,698.6** at Fri 22:59:27.
+- Computed from `scale-heart.log`: the largest rise of the cumulative `vcc` counter over a sample pair 60,914 ms apart is **2,837.3**, starting Fri 22:57:06. *(inference from the counter, not a line the runner printed.)*
+- `scale-heart-a.log` and `scale-heart-b.log` cover the same minutes around Sat 00:21. Each computed rise is about 1,000 per second (1,046.9 and 1,002.7). They were not added.
+
+No printed `scale_minute` line is at or above 5,000. The lines used here do not include an `isSynced` field, so this check does not restate that the local node was synced.
+
+### What the desk check does not change
+
+- Box inclusion stays 58,905,910. The best box minute stays 4,253. The best box hour stays 2,518.
+- Desk rates were not added to those figures. Transaction ids were not matched to n0, so L4's "other senders" are still not identified one by one. The desk was logging during L4. That is as far as this check goes.
+- No desk fee was added to 361,814 tKAS or to the 45,464 KAS mainnet figure.
+- The Friday-night API story was not revised from the desk log. The desk file `public-api-calls.log` has 281 lines. Each line is a request URL. The last is Fri 20:35:23. There is no response body, and the file stops before the Friday-night freeze.
+
 ## The "~5k TPS" question
 
 stp said it "sometimes reached ~5k TPS". What the data shows:
@@ -273,9 +333,10 @@ stp said it "sometimes reached ~5k TPS". What the data shows:
 - **Unique box transactions included: no.** The best was 4,253/s over a minute and 3,717/s over 10 minutes. Short 10-s steps reached 4,478 (L1) and 4,700 (L2). Those are measurement-granularity bursts, not a rate.
 - **Unique network-wide: only hourly data exists.** The best hour was 2,732/s.
 - **n0's "processed" counter: yes, well above 5k.** 7,409/s for a minute in L1, and 8,965/s for a minute and 8,218/s for 10 minutes in L4. But that counter counts a tx once per block that carries it, plus everyone else's traffic. A block-explorer TPS gauge that counts txs in blocks would show figures like this. **That this is where the 5k came from is UNVERIFIED.**
-- **L4, all senders together.** In L4 other senders (probably Grok Build's desk; not verified) were heavy, and processed was 3.3× our box rate. Unique network-wide TPS for L4 at minute resolution **cannot be measured from these logs**: the indexer was frozen.
+- **L4, all senders together.** In L4 other senders were heavy, and processed was 3.3× our box rate. The desk's public-node runner and its local P2W scale were both logging during L4. Their transaction ids were not matched to n0, so this check does not name those other senders. Unique network-wide TPS for L4 at minute resolution **cannot be measured from these logs**: the indexer was frozen.
+- **Desk meters.** The desk's printed virtual-chain minutes stay under 2,800. Its `chainPerSec` samples stay under 4,349. Its public-node status lines do go above 5,000, up to 24,249 submit-oks per second, and that field is not inclusion. See the [desk check](#desk-check-later-the-same-day).
 
-**Plain answer:** the box alone peaked at about **4.25k tx/s for a minute**. "5k" is only reached by meters that double-count, or in 10-second bursts close to it.
+**Plain answer:** the box alone peaked at about **4.25k tx/s for a minute**. "5k" as unique included transactions is not in the box series, and it is not in the desk's virtual-chain lines. It shows up on meters that double-count, on single 10-second steps close to it, and on the desk's submit-ok rate.
 
 ## What this means for mainnet
 
@@ -380,14 +441,19 @@ All rate × shape combinations, 1 h and 24 h. The 30 min to 24 h rows for every 
 | Earlier test: freeze lasted days (stp) | REST API indexer frozen ≥3 d 15 h from 25 Sep 21:55 CEST (tn10-indexer-stall-2026-09 README l.7–9, l.30, l.36). Stream/explorer freeze: no file | ✅ for the REST API; **UNVERIFIED** for the stream/explorer |
 | KNS 18,524 names, ownership verified | 9,509 + 8,258 + 757 verified on api.knsdomains.org | ✅ |
 | qp4jge 10.66M txs | Value from a logged API call; the raw response was not saved | ⚠️ attributed |
+| Desk ack totals to Fri 09:40: 16,972,123 / 15,697,431 / 1,274,692 | Recomputed from the desk sender log, batch lines at or before Fri 09:40:33.393 | ✅ as a sum of the `accepted` field. That field is a submit result. The duplicate split was not counted |
+| Desk rates above 5k are included transactions | Highest `accepted_tx_s` is 24,249. Printed P2W virtual-chain minutes peak at 2,795.6 | ❌ for the submit-ok field; ✅ that the printed P2W minutes stay under 2,800 |
 
-## Missing (needs files from stp's desk)
+## Still missing after the desk check
 
-Grok Build's numbers for the Friday-evening run, and its desk log after Thu 23:23, are not on the box. To add the desk side of L4 and a full desk count, these files are needed (paths as written by the Build prompt):
+The sender log and the later runner logs were read. These items are still open:
 
-- `C:\Users\Fermi\kaspa-tn10\build-storm2\final-report.json`: accepted, rejects, avg tx/s, spent, first/last txid
-- `C:\Users\Fermi\kaspa-tn10\build-storm2\logs\` (status lines every 60 s)
-- the full desk `sender.jsonl` behind `desk-public-read-2026-10-02.md` (the repo copy ends Thu 23:23 CEST)
+- `final-report.json` was not on disk. The two `final` lines that do exist are quoted above and were not turned into a fee total.
+- No join between desk transaction ids and n0's accepted transactions. L4's network-wide unique rate stays unknown while the indexer hour is incomplete.
+- The desk `public-api-calls.log` has no response bodies and stops at Fri 20:35, so it does not check the Friday-night freeze.
+- How many sender `accepted` values were already/duplicate/exists was not counted.
+- `accepted_total` and `spent_tkas` in the long public-node log are not monotonic, so there is no submit-ok total and no fee total for that run.
+- The local P2W lines used here have no `isSynced` field.
 
 ## Monitoring plan for the next storm (Tue 6 Oct)
 
@@ -423,6 +489,7 @@ Each item fixes a gap from this run.
   - `artifacts/kaspa-tn10/share.csv` (independent share sampler)
   - `artifacts/kns-tn10/*`
 - Private analysis repo (STP-KAS/tn10-storm-2026-10-analysis): `analysis/BOX-REPORT.md`, `analysis/desk-public-read-2026-10-02.md`, `desk/sender.jsonl`.
+- Desk check, later on Sat 3 Oct, from the desk logs. Raw logs were not published. Derived tables: `data/desk_batch_hours.csv`, `data/desk_submit_ok_peaks.csv`, `data/desk_p2w_peaks.csv`, `data/desk_final_lines.csv`, `data/desk_long_run.csv`, rebuilt by `data/desk_check.py`. The desk `public-api-calls.log` was read for request times only (281 lines, last Fri 20:35:23, no response body).
 - Earlier test, private note STP-KAS/tn10-indexer-stall-2026-09 (commit `22780de`): `README.md` l.7–9, 12–14, 30, 33–36; `evidence/api-health-2026-09-29.txt` l.3. Box file `artifacts/stress-tests/dryrun/api-health-min-dry.jsonl` l.2 (first healthy sample, 1 Oct 18:27:39 CEST).
 - Public data:
   - `api-tn10.kaspa.org/transactions/count/2026-10-0{1,2,3}`, saved in `data/sources/`
@@ -433,7 +500,7 @@ Each item fixes a gap from this run.
 ## Conclusion
 
 - **Volume:** 58.9M box transactions included in four legs, 152 rejects, 361,814 tKAS in fees. Best minute 4,253 tx/s, best 10 minutes 3,717, best hour 2,518.
-- **~5k TPS:** not reached as unique included transactions. Only meters that double-count (n0 "processed") or single 10-s steps get there or past.
+- **~5k TPS:** not reached as unique included transactions on the box, or on the desk's printed virtual-chain minutes. The desk's public-node status lines do print submit-ok rates above 5,000, up to 24,249/s. That field is not inclusion.
 - **What limited it:** block mass, per-connection submit rate, and above all one box's disk and RAM. Every leg ended on a disk or RAM guard. Our own hashrate decided how many of our txs got in.
 - **Mining share:** stp's share was 50–63% while his box miners ran, and 25% over the first night. 60–70% is not supported. On TN10 an estimated ~57% of the fees came back to him.
 - **The public API is the weak point, but it recovered much better than last time.** Thursday it lagged up to ~12 min. Friday night its indexer froze for about 85 minutes (HTTP 503) and the address view of stp's mining address froze with it, while n0 stayed synced. Every stall came under high load (not exactly at our peaks). Each one we could watch to its end cleared within 2–5 minutes of its last bad sample. In the 25 Sep test the same API's indexer stayed frozen for at least 3 days 15 hours. The stream/explorer view was not monitored in either test.

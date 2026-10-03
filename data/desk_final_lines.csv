@@ -1,0 +1,3 @@
+log_file,t_utc,minutes,workers_last,accepted_total,rejects_total,stale_total,avg_tx_s,spent_tkas,stopped
+run-20261002-115415.log,2026-10-02T09:56:08.360Z,1.6,1,7408,0,0,79,18.7793,only reserve left
+run-20261002-153336.log,2026-10-02T13:38:03.471Z,4.4,24,2554846,2071,2071,9640,11430.5492,STOP file / Ctrl+C
