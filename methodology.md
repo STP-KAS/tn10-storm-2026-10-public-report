@@ -55,6 +55,12 @@ Raw logs are not published: they hold host names, addresses and operational deta
 - Freeze identification in L4: indexer lag growing ~120 s per 120-s sample (no progress at all), plus the coinbase-view lag growing 1 s per second.
 - Gaps (sampler not running) are listed in `data/api_gaps.csv`; nothing is inferred inside a gap.
 
+## 5b. API episodes vs load (`api_vs_load.py`) and mempool context (`mempool_view.py`)
+
+- **Episode windows** run from the first to the last flagged sample (stall, 503 or mined_stall) in `api_events.csv`. "Recovered" is the first later sample with HTTP 200 and lag <120 s, or newest-coinbase lag <120 s for the address view. It is bounded by the 120-s / 300-s sampling interval. Load in each window: the mean of the box 5-min bins and the mean n0 "Processed" rate (upper bound, all senders).
+- **Earlier-test comparison:** the freeze start and the 29 Sep check come from STP-KAS/tn10-indexer-stall-2026-09 `README.md`. The upper bound on its end is the first healthy sample in the 1 Oct dry run (`artifacts/stress-tests/dryrun/api-health-min-dry.jsonl` l.2). Same endpoint and field, very different sampling density. The TN10 stream/explorer was not monitored in either test.
+- **Mempool:** only n0's mempool *count* (host sampler), n0's fee estimate (`feerate.jsonl`) and kaspad's "evicted … in favor of incoming higher feerate transactions" lines. Composition and pending times were not sampled, so third-party or covenant txs cannot be singled out. No new queries were made to n0.
+
 ## 6. Mainnet formula (`mainnet_scenarios.py`)
 
 ```

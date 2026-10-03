@@ -9,4 +9,6 @@ python3 block_share_sampler2.py /workspace/artifacts/kaspa-tn10/share.csv > /dev
 python3 api_view.py         /workspace/artifacts/stress-tests/data > /dev/null
 python3 desk_sender.py      /workspace/repos/tn10-storm-2026-10-analysis/desk/sender.jsonl > /dev/null
 python3 mainnet_scenarios.py > /dev/null
+python3 api_vs_load.py > /dev/null
+python3 mempool_view.py > /dev/null
 python3 make_tables.py

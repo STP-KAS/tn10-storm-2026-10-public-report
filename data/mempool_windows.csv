@@ -1,0 +1,10 @@
+window_cest,mempool_samples,mempool_median,mempool_p95,mempool_max,fee_est_normal_median,fee_est_normal_max,fee_est_priority_max,evicted_for_higher_feerate
+pre-storm baseline,454,0,57,216,100.0,100.0,100.0,0
+L1 box miners on,990,3038,73359,99803,195.7,6414.8,54128.6,59081
+L1 peak incl. 30x fee burst 01:10-01:30,80,64992,75560,77480,1540.9,2328.0,19646.7,0
+"L1 night, box miners off",1524,71498,84142,99992,193.9,24144.8,203875.9,427059
+L2,168,2176,59180,96293,191.7,63642.4,537153.2,0
+L3 loaded,144,4448,42153,76461,191.9,196.4,1339.0,0
+L4 loaded,202,17140,25993,30826,194.2,211.7,1786.1,0
+L4 peak 23:10-23:25,30,18360,26043,27316,194.8,196.9,1570.1,0
+after the storm Sat 01:06-17:00,1675,0,85,13757,100.0,730.0,6160.2,0

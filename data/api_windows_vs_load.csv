@@ -1,0 +1,11 @@
+window,start_cest,end_cest,minutes,box_tps_avg_in_window,box_tps_avg_hour_before,box_best_5min_bin_in_window,box_best_5min_bin_at,n0_processed_tps_avg_in_window,recovered_at_cest,recovery_min_after_last_bad_sample,note
+L1 health: indexer lag >120 s (stall) with intermittent 503,Thu 22:29,Thu 23:31,62,1477,1730,2752,Thu 22:40,3591,Thu 23:33,2,"lagging, not frozen: lag rose and fell between 137 and 704 s"
+L1 health: continuous 503 (isSynced false),Thu 23:03,Thu 23:29,26,951,1920,2231,Thu 23:00,2705,Thu 23:33,4,subset of the window above
+L1 coinbase view: mined_stall,Thu 22:56,Thu 23:31,35,1141,1875,2231,Thu 23:00,3047,Thu 23:36,5,newest qzffl5 coinbase 306-651 s old
+L1 health: stall + 503 again,Thu 23:53,Fri 00:09,16,2421,1531,2850,Thu 23:50,4217,Fri 01:00,51,health sampler then stopped 00:09-01:00; runners paused 00:10-01:10
+L1 coinbase view: mined_stall again,Fri 00:01,Fri 00:06,5,2284,1567,2340,Fri 00:05,3918,Fri 08:45,519,mined-watch sampler then stopped 00:06-08:45
+"L1 health: 503 with slow responses (18 s), then stall",Fri 01:22,Fri 01:30,8,2161,728,3677,Fri 01:20,5427,Fri 01:32,2,during the 30x-fee burst 01:10-01:27 that gave the L1 1-min peak (01:24:46)
+L2 health: stall (preceded by 6 timeouts 09:39-09:51),Fri 09:55,Fri 09:57,2,1645,1878,1645,Fri 09:55,4948,Fri 09:59,2,right after the L2 1-min/10-s peaks (09:52-09:54)
+L3 health: two 503 + intermittent stall,Fri 12:25,Fri 12:47,22,2005,1203,2137,Fri 12:35,5340,Fri 12:49,2,"lag 22-170 s, rose and fell; not at the L3 peak (11:55)"
+"L4 health: full indexer freeze, 503 every sample 22:09-23:27",Fri 22:01,Fri 23:27,86,2435,336,3238,Fri 23:15,6546,Fri 23:29,2,lag grew ~120 s per 120-s sample: no progress at all
+L4 coinbase view frozen,Fri 22:03,Fri 23:23,80,2454,336,3238,Fri 23:15,6587,Fri 23:28,5,same newest coinbase id 22:23-23:18; mined_stall flag could not fire (share counter 0)
