@@ -61,11 +61,46 @@ Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok
 
 ## What
 
-stp's box node **n0** (rusty-kaspa kaspad 2.1.0, TN10, one 8-vCPU Xeon VM with 15 GB RAM and a 126 GB disk) was loaded by our own index-free runners in four legs. Grok Build sent extra load from stp's desk PC through public TN10 nodes, using the wallet `kaspatest:qp4jge54…`.
+stp's box node **n0** (rusty-kaspa kaspad 2.1.0, TN10, one 8-vCPU Xeon VM with 16 GB RAM and a 126 GB disk; see [Hardware used](#hardware-used)) was loaded by our own index-free runners in four legs. Grok Build sent extra load from stp's desk PC through public TN10 nodes, using the wallet `kaspatest:qp4jge54…`.
 
 - **Runners.** At first these were "SMX": signed 1-in-1-out P2PK hops of about 1,752 g. From Thu 21:42 they were "P2W": unsigned 1-in-1-out hops between pay-to-script-hash lane addresses whose redeem script is `push4(id) OP_DROP OP_TRUE`, about 643 g each (`storm-p2w-runner.mjs`). P2W outputs are **anyone-can-spend**. That was fine for throwaway testnet coins. It matters for the mainnet section.
 - **Funding.** The runners were funded from the coinbase outputs of stp's TN10 mining address `kaspatest:qzffl5…`.
 - **Fees.** The feerate was a multiple of n0's own fee estimate. It was 3× and floating until the pause at Fri 00:10. After the restart it was a fixed 6,000 sompi/g (30×) from 01:09:50 to 01:26:51, when the fee-float guard cut it to 3×. From 01:33:41 it was a flat 2× capped at 400 sompi/g (`feerate.jsonl`, `run/timeline.md`).
+
+## Hardware used
+
+AI agents planned, ran and analysed this storm: Grok Bot agents on the box, and Grok Build on stp's desk PC. They used one cloud VM and one consumer desktop. No special hardware was involved.
+
+**The box** (checked Sat 3 Oct 2026, 18:47 CEST, with `nproc`, `free` and `df -h`):
+
+- 8 vCPUs (Intel Xeon; the VM does not report the exact model)
+- 16 GB RAM (`free` shows 15.6 GiB)
+- 126 GB disk
+- It ran n0, the box miners, the runners, the samplers and the analysis scripts.
+
+**stp's desk PC** (from stp's screenshot; not checked from the box):
+
+- Intel Core i7-13700K, 16 cores / 24 threads
+- 32 GB DDR5-6000 CL36
+- ASUS TUF Z790-Plus WiFi motherboard
+- Samsung 990 Pro 2 TB NVMe SSD
+- ASUS TUF RTX 4070 Ti 12 GB graphics card
+- Windows 11 Pro, 1 Gbps Ethernet
+- It ran 20 CPU miners at about 75% CPU (stp's figure, not logged in this repo) and Grok Build's desk sender (see [Desk check](#desk-check-later-the-same-day)).
+
+**What that hardware did** (figures from the sections below):
+
+- The box runners got **58,905,910** transactions included on TN10 over four legs. The best minute was 4,253 tx/s and the best hour 2,518 tx/s.
+- stp's blocks were 50–63% of TN10 blocks while the box miners ran.
+- The desk sender logged 17,415,510 submits. That is a submit count, not an inclusion count.
+
+**The box was the bottleneck**, as §5 shows:
+
+- CPU: the load average reached about 28–32 on 8 vCPUs in L2.
+- RAM: two storm-watch STOPs at under 1 GB free, and one n0 OOM kill.
+- Disk: every leg ended on a disk pause or a disk or RAM STOP.
+
+The desk PC's own limits were not measured.
 
 ## Why
 
@@ -105,7 +140,7 @@ Sources: `run/timeline.md`, runner `rep`/`final` lines, `data/legs_box.csv`. n0 
   - First, block compute mass. 1,752 g SMX hops fill a 500,000 g block at ~285 txs.
   - Then per-process submit throughput: about 700–850 tx/s per P2W process on Thursday (timeline 22:25–22:31), and about 380 per runner over one wRPC connection on Friday in L2 (about 480 with 4 connections).
   - Then block mass again once P2W ran at 6–8 runners. In L3, 8 runners pushed blocks to 492k and throughput collapsed.
-  - Then disk: each leg ended on a disk pause or a disk STOP.
+  - Then disk: every leg was in a disk pause or hit a disk STOP at its end. L1's final stop was a RAM STOP, during a disk self-pause.
 
 ### 2. Network-wide view (everything n0 saw, including Grok Build's desk load and other TN10 senders)
 
@@ -135,7 +170,7 @@ Source: n0 kaspad log, `Processed N blocks … (M transactions …)` every 10 s,
 
 ### 3. Fees, block share, and why the TN10 cost was lower than the gross fee
 
-- **Fees paid by the box runners: 361,814 tKAS** for 58.9M txs. That is 0.00614 tKAS per tx on average, at a mean feerate of 796 sompi/g. By leg: L1 291,967 (mean 1,090 sompi/g; 122,320 of it in the 24 minutes at 30×), L2 14,811 (337), L3 20,239 (384), L4 34,797 (386).
+- **Fees paid by the box runners: 361,814 tKAS** for 58.9M txs. That is 0.00614 tKAS per tx on average, at a mean feerate of 796 sompi/g. By leg: L1 291,967 (mean 1,090 sompi/g; 122,320 of it in the 30× runner segment, 01:09:58–01:33:41), L2 14,811 (337), L3 20,239 (384), L4 34,797 (386).
 - Not in that total: the transfers to Grok Build's wallet (836.9 + 11,647.7 tKAS fees on Thu/Fri), TN10 ops' 3.0M tKAS send to Build on Fri 09:01–09:08 (35,020.6 tKAS fees, timeline 10:39), sweeps (~16 tKAS), and KNS (§6).
 
 **Who mined the blocks n0 saw** (`data/block_share_legs.csv` from `host.jsonl`, and the independent 5-minute sampler `data/block_share_sampler2.csv`):
@@ -255,7 +290,7 @@ What the logs do show is that n0's mempool was crowded and fee-competitive at th
 
 ### 5. Limits of this test (honest list)
 
-- **One box.** 8 vCPU, 15 GB RAM, 126 GB disk, shared by n0, the box miners (nice 19), the runners and the samplers. The load average reached ~28–32 on 8 vCPUs in L2 (timeline 09:19, 09:31).
+- **One box.** 8 vCPU, 16 GB RAM, 126 GB disk, shared by n0, the box miners (nice 19), the runners and the samplers. The load average reached ~28–32 on 8 vCPUs in L2 (timeline 09:19, 09:31).
 - **Caps:**
   - Block compute mass: SMX filled blocks at ~285 txs. P2W at 6–8 runners pushed blocks to 492–499k g; in L3, adding the 8th runner made throughput fall.
   - Submit throughput per process: ~700–850 tx/s per P2W process on Thursday, ~380 per runner over one wRPC connection on Friday (L2), ~480 with 4 connections.
@@ -263,7 +298,7 @@ What the logs do show is that n0's mempool was crowded and fee-competitive at th
   - Two storm-watch STOPs at RAM below 1 GB: Thu 23:13:34 (1,009 MB; a read-only scan script contributed) and Fri 07:52:54 (754 MB; most likely a large outside read-only probe for qp4jge, timeline 08:08 *(inference)*).
   - The coinbase feeder had to be restarted on RSS more than 10 times.
   - **n0 was OOM-killed at Fri 00:50** by one `getUtxosByAddresses` call on stp's mining address, which holds a huge number of coinbase UTXOs (kernel: kaspad anon-rss 9.46 GB).
-- **Disk.** 4.5–7 GB/h at load. Every leg ended on disk: L1 at the 25 GB self-pause, L2 at 19.5 GB, L3 and L4 at the 21 GB pause and then a STOP after 15 min under 19 GB. The Fri 08:09 pruning low point was 9.15 GB.
+- **Disk.** 4.5–7 GB/h at load. Every leg ended on disk: L1 in the 25 GB self-pause from about 07:12 (the RAM STOP at 07:52:54 then ended it), L2 at 19.5 GB, L3 and L4 at the 21 GB pause and then a STOP after 15 min under 19 GB. The Fri 08:09 pruning low point was 9.15 GB.
 - **Fee float feedback loop.** "3× the node's normal estimate" chased its own backlog: up to 19,244 sompi/g (Thu 23:56). The 30× runner segment (01:09:58–01:33:41; 6,000 sompi/g until 01:26:51, then 3×) cost 122,320 tKAS, 42% of L1 fees, for 11.5% of L1's included txs (private box report). A flat 2× then lost to outside senders while n0's normal estimate hit 24,145 (Fri 01:51).
 - **Pruning windows.** TN10 pruning-point moves happen about every 12 h. The kaspad log shows them Thu 19:36–20:13, Fri 07:53–08:30 and Fri 19:37–20:22, and they eat disk and RAM. The Friday-evening leg was held outside an 18:55–20:15 pruning window (`run/GO-next-leg.md`).
 - **Own hashrate decided inclusion.** After the box miners stopped (Fri 01:31:50), our inclusion fell to ~300 tx/s with blocks mostly empty *(inference: other TN10 miners included few of our txs)*.

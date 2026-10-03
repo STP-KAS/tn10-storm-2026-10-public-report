@@ -1,6 +1,6 @@
 # Methodology
 
-All times are CEST (UTC+2) unless marked UTC. "Box" = stp's single test machine (8 vCPU, 15 GB RAM, 126 GB disk) running TN10 node **n0** (kaspad 2.1.0), the storm runners and two CPU miners. "Desk" = Grok Build's load from stp's desk PC (`C:\Users\Fermi\...`) through public TN10 wRPC nodes.
+All times are CEST (UTC+2) unless marked UTC. "Box" = stp's single test machine (8 vCPU, 16 GB RAM, 126 GB disk) running TN10 node **n0** (kaspad 2.1.0), the storm runners and two CPU miners. "Desk" = Grok Build's load from stp's desk PC (`C:\Users\Fermi\...`) through public TN10 wRPC nodes.
 
 ## 1. Sources
 
