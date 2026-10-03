@@ -2,7 +2,7 @@
 
 **Kaspa Testnet-10 (TN10) only. Nothing in this test touched mainnet.** The mainnet section is arithmetic on the measured TN10 numbers.
 
-Written Sat 3 Oct 2026, about 18:00 CEST, by Grok Bot on stp's box, from the box's own logs. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
+Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:30 CEST, by Grok Bot on stp's box, from the box's own logs. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
 
 ## Summary
 
@@ -54,7 +54,7 @@ Written Sat 3 Oct 2026, about 18:00 CEST, by Grok Bot on stp's box, from the box
 
 ## What
 
-stp's box node **n0** (rusty-kaspa kaspad 2.1.0, TN10, one 8-core Xeon VM with 15 GB RAM and a 126 GB disk) was loaded by our own index-free runners in four legs. Grok Build sent extra load from stp's desk PC through public TN10 nodes, using the wallet `kaspatest:qp4jge54…`.
+stp's box node **n0** (rusty-kaspa kaspad 2.1.0, TN10, one 8-vCPU Xeon VM with 15 GB RAM and a 126 GB disk) was loaded by our own index-free runners in four legs. Grok Build sent extra load from stp's desk PC through public TN10 nodes, using the wallet `kaspatest:qp4jge54…`.
 
 - **Runners.** At first these were "SMX": signed 1-in-1-out P2PK hops of about 1,752 g. From Thu 21:42 they were "P2W": unsigned 1-in-1-out hops between pay-to-script-hash lane addresses whose redeem script is `push4(id) OP_DROP OP_TRUE`, about 643 g each (`storm-p2w-runner.mjs`). P2W outputs are **anyone-can-spend**. That was fine for throwaway testnet coins. It matters for the mainnet section.
 - **Funding.** The runners were funded from the coinbase outputs of stp's TN10 mining address `kaspatest:qzffl5…`.
@@ -167,7 +167,7 @@ Probes:
 | L3 | 151 | 2 | 7 | 4 (12:33–12:47) | 170 s | 56 | 302 s | 3 |
 | **L4** | 97 | **40** | 1 | 41 (22:05 – 23:27) | **4,311 s** (23:21) | 39 | **4,138 s** (23:18) | 0‡ |
 
-- **Thursday (L1): lag, not a freeze.** The indexer fell up to 11.7 min behind. The mined-coinbase view lagged up to 10.9 min. 28 HTTP 503s, 22 of them with the DB reporting `isSynced:false`. Each episode cleared within minutes (timeline below).
+- **Thursday (L1): lag, not a freeze.** The indexer fell up to 11.7 min behind. The mined-coinbase view lagged up to 10.9 min. 28 HTTP 503s, 22 of them with the DB reporting `isSynced:false`. Each episode we could watch to its end cleared within minutes; two ended inside sampler gaps (timeline below).
 - **Friday night (L4): a full freeze, about 85 minutes from first lag to recovery (≈22:02–23:28).** The indexer lag started building at 22:01. From about 22:10 the indexer's accepted-tx pointer stopped completely: from 22:23 to 23:21 the lag grew by exactly 120 s per 120-s sample. Every health call from 22:09 to 23:27 returned **HTTP 503** with `isSynced:false`. The newest coinbase shown for stp's mining address froze at the same time. Its lag grew from 89 s (22:03:55) to 4,138 s (23:18:55), the same coinbase id was shown from 22:23 to 23:18, and the lag was back to 9 s at 23:28:55. Meanwhile n0 kept seeing stp's miners win ~50% of blocks (independent sampler), so the address view was stale, not quiet. ‡The sampler's own `mined_stall` flag missed this, because its "blocks we mined" input came from the host sampler's share counter, which read 0 after n0's Friday restart.
 - **Address-level freezes.** The only address read on a schedule was stp's mining address (qzffl5). Its page timed out (20 s) 22 times across all windows, plus the L4 freeze above. Grok Build's wallet qp4jge was read 13 times on Fri 07:52–07:57. One `transactions-count` call needed a retry with a 60-s timeout. The first attempt's result was not saved, so **"qp4jge's view froze" is UNVERIFIED**. No other addresses were probed.
 - **Measurement gaps:** mined-view watcher **Fri 00:06–08:45** (it crashed on restart at 01:00:31, so the 01:24 peak has no mined-view data) and 08:45–12:13. Health probe Fri 00:09–01:00, 08:44–09:07 and 10:13–11:49.
@@ -248,7 +248,7 @@ What the logs do show is that n0's mempool was crowded and fee-competitive at th
 
 ### 5. Limits of this test (honest list)
 
-- **One box.** 8 vCPU, 15 GB RAM, 126 GB disk, shared by n0, the box miners (nice 19), the runners and the samplers. The load average reached ~28–32 on 8 cores in L2 (timeline 09:19, 09:31).
+- **One box.** 8 vCPU, 15 GB RAM, 126 GB disk, shared by n0, the box miners (nice 19), the runners and the samplers. The load average reached ~28–32 on 8 vCPUs in L2 (timeline 09:19, 09:31).
 - **Caps:**
   - Block compute mass: SMX filled blocks at ~285 txs. P2W at 6–8 runners pushed blocks to 492–499k g; in L3, adding the 8th runner made throughput fall.
   - Submit throughput per process: ~700–850 tx/s per P2W process on Thursday, ~380 per runner over one wRPC connection on Friday (L2), ~480 with 4 connections.
@@ -361,7 +361,7 @@ All rate × shape combinations, 1 h and 24 h. The 30 min to 24 h rows for every 
 3. **Policy.** Mainnet mempool policy accepts these shapes the same way TN10 kaspad 2.1.0 did. The minimum relay fee is charged on the larger of compute mass and normalized transient mass; storage mass is not charged ([`mining/src/mempool/check_transaction_standard.rs`](https://github.com/kaspanet/rusty-kaspa/blob/01b532e8b553523216471682649693af92f0fd16/mining/src/mempool/check_transaction_standard.rs) l.67–76).
 4. **Price.** A flat price for the whole duration: Kraken last trade at 17:58 CEST Sat 3 Oct. A large buy of KAS to fund the fees would move it. Not modelled.
 5. **Fees.** No fee recapture and no fee-market escalation (deliberate, see above). Coins in lanes are not spent, only fees. The lane float itself (tens of thousands of KAS on TN10) is capital, not cost.
-6. **Rates.** "Peak" and "sustained" are box-only rates from one 8-core box. A better-provisioned sender could go higher, up to the capacity column.
+6. **Rates.** "Peak" and "sustained" are box-only rates from one 8-vCPU box. A better-provisioned sender could go higher, up to the capacity column.
 7. **Duration rows** repeat the measured rate for the whole duration. **The test never held these rates that long:** the best full hour was 2,518 tx/s, and the longest unbroken run of 5-min bins at ≥2,000 tx/s was 55 min (Fri 22:00–22:55). Everything past 1 h is extrapolation.
 
 ## Claims vs verified
