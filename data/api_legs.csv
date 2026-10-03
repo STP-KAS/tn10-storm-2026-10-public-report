@@ -1,0 +1,7 @@
+window_cest,health_samples,health_503,health_502,health_timeouts,stall_suspected_samples,first_stall,last_stall,max_indexer_lag_s,max_indexer_lag_at,mined_samples,mined_timeouts,mined_stall_true,max_newest_coinbase_lag_s,max_coinbase_lag_at
+baseline Thu 18:41-20:35,57,0,0,1,0,,,5,Thu 01 Oct 18:45,22,0,0,11.4,Thu 01 Oct 18:51
+L1,315,28,0,20,48,Thu 01 Oct 22:29,Fri 02 Oct 01:30,704.4,Thu 01 Oct 23:19,43,1,9,651.5,Thu 01 Oct 23:16
+L2,34,0,0,8,2,Fri 02 Oct 09:55,Fri 02 Oct 09:57,166,Fri 02 Oct 09:55,0,0,0,,
+L3,151,2,0,7,4,Fri 02 Oct 12:33,Fri 02 Oct 12:47,170,Fri 02 Oct 12:47,56,2,3,301.8,Fri 02 Oct 15:28
+L4,97,40,0,1,41,Fri 02 Oct 22:05,Fri 02 Oct 23:27,4310.9,Fri 02 Oct 23:21,39,0,0,4138.0,Fri 02 Oct 23:18
+after Sat 01:06-17:55,505,1,2,38,0,,,14,Sat 03 Oct 08:55,202,14,0,19508.8,Sat 03 Oct 13:18

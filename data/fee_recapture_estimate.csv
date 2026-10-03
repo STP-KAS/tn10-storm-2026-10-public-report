@@ -1,0 +1,8 @@
+window_cest,box_included,fees_tkas,stp_block_share_pct,share_source,est_fees_back_to_stp_tkas,est_net_fee_tkas
+L1 SMX 20:35-21:42,4680400,46532.49,57.2,host.jsonl share,26616.58,19915.91
+L1 P2W box miners on 21:42-01:32,19027826,229962.51,60.3,host.jsonl share,138667.39,91295.12
+L1 box miners off 01:32-07:53,6175937,15471.98,0.6,host.jsonl share,92.83,15379.14
+L2 09:07-10:15,6815084,14810.97,62.8,host.jsonl share,9301.29,5509.68
+L3 11:49-16:51,8188106,20238.84,58.1,host.jsonl share,11758.76,8480.07
+L4 21:52-01:06,14018548,34797.47,52.6,share-sampler (all blocks via n0),18303.47,16494.0
+ALL,58905902,361814.25,56.6,fee-weighted,204740.33,157073.92

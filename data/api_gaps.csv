@@ -1,0 +1,6 @@
+probe,gap_start_cest,gap_end_cest,minutes
+health,Fri 02 Oct 00:09,Fri 02 Oct 01:00,51
+health,Fri 02 Oct 08:44,Fri 02 Oct 09:07,23
+health,Fri 02 Oct 10:13,Fri 02 Oct 11:49,96
+mined-watch,Fri 02 Oct 00:06,Fri 02 Oct 08:45,519
+mined-watch,Fri 02 Oct 08:45,Fri 02 Oct 12:13,209

@@ -1,0 +1,11 @@
+window_cest,samples,samples_with_share_on,blocks_counted,box_pct,desk_pct,stp_total_pct,rest_of_network_pct
+pre-storm baseline,456,456,56841,0.0,29.7,29.7,70.3
+L1 SMX 20:35-21:42,269,269,45910,34.9,22.3,57.2,42.8
+"L1 P2W, box miners on 21:42-01:32",720,720,108496,59.7,0.5,60.3,39.7
+L1 box miners off 01:32-07:53,1523,1523,216643,0.0,0.6,0.6,99.4
+L1 whole 20:35-07:53,2512,2512,371049,21.8,3.3,25.1,74.9
+L2 09:07-10:15,168,168,40630,62.8,0.0,62.8,37.2
+L3 11:49-16:51,602,602,182133,56.3,1.8,58.1,41.9
+L3 loaded 11:52-13:04,144,144,41055,55.4,1.1,56.5,43.5
+L4 21:52-01:06,386,386,0,not measured,not measured,not measured,not measured
+L4 loaded 21:57-23:38,202,202,0,not measured,not measured,not measured,not measured

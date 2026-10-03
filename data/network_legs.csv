@@ -1,0 +1,5 @@
+leg,log_lines,blocks_per_s,processed_peak_10s_tps,processed_peak_10s_start_cest,processed_peak_60s_tps,processed_peak_60s_start_cest,processed_peak_300s_tps,processed_peak_300s_start_cest,processed_peak_600s_tps,processed_peak_600s_start_cest,processed_peak_3600s_tps,processed_peak_3600s_start_cest,mean_compute_mass_per_block_when_loaded,pct_of_500k_compute_when_loaded,max_10s_mean_compute_mass,max_10s_mean_storage_mass,max_10s_mean_transient_mass
+L1,3912,10.2,16886,Fri 02 Oct 00:56:05,7409,Fri 02 Oct 01:24:46,6719,Fri 02 Oct 01:20:46,6488,Fri 02 Oct 01:16:06,4541,Thu 01 Oct 22:13:51,354922,71.0,499754,479757,757291
+L2,403,10.18,8774,Fri 02 Oct 09:52:55,6375,Fri 02 Oct 09:47:55,5657,Fri 02 Oct 09:45:04,5357,Fri 02 Oct 09:40:04,3675,Fri 02 Oct 09:07:34,337303,67.5,499731,471518,713218
+L3,1806,10.1,7195,Fri 02 Oct 12:40:48,6269,Fri 02 Oct 12:40:48,5628,Fri 02 Oct 12:38:08,5470,Fri 02 Oct 12:37:28,4895,Fri 02 Oct 11:55:19,369684,73.9,499280,28332,603077
+L4,1158,9.93,12439,Sat 03 Oct 00:29:48,8965,Fri 02 Oct 22:50:31,8345,Fri 02 Oct 22:50:41,8218,Fri 02 Oct 22:46:41,6849,Fri 02 Oct 21:59:50,396651,79.3,499789,22466,712657

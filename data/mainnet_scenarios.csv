@@ -1,0 +1,65 @@
+shape,mass_g,rate,tps,mainnet_capacity_tps,fits_mainnet,pct_of_mainnet_mass_capacity,duration_h,txs,kas_normal_100,kas_priority_150,usd_normal,usd_priority,eur_normal,eur_priority
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,0.5,7655040,4935.97,7403.95,209.43,314.15,186.48,279.72
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,1,15310080,9871.94,14807.91,418.87,628.3,372.96,559.44
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,2,30620160,19743.88,29615.82,837.73,1256.6,745.92,1118.89
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,3,45930240,29615.82,44423.73,1256.6,1884.9,1118.89,1678.33
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,4,61240320,39487.76,59231.64,1675.47,2513.2,1491.85,2237.77
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,10,153100800,98719.4,148079.09,4188.66,6283.0,3729.62,5594.43
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,12,183720960,118463.28,177694.91,5026.4,7539.6,4475.54,6713.31
+P2W hop (measured avg incl. funding txs),644.8,"peak 1 min (L1, Fri 01:24:46)",4252.8,7754,True,54.8,24,367441920,236926.55,355389.83,10052.79,15079.19,8951.09,13426.63
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,0.5,6691140,4314.45,6471.67,183.06,274.59,163.0,244.5
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,1,13382280,8628.89,12943.34,366.12,549.19,326.0,489.0
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,2,26764560,17257.79,25886.68,732.25,1098.37,652.0,978.0
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,3,40146840,25886.68,38830.02,1098.37,1647.56,978.0,1467.0
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,4,53529120,34515.58,51773.36,1464.5,2196.74,1304.0,1956.0
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,10,133822800,86288.94,129433.41,3661.24,5491.86,3260.0,4889.99
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,12,160587360,103546.73,155320.09,4393.49,6590.23,3912.0,5867.99
+P2W hop (measured avg incl. funding txs),644.8,"peak 10 min (L1, Fri 01:16:11)",3717.3,7754,True,47.9,24,321174720,207093.46,310640.19,8786.98,13180.46,7823.99,11735.99
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,0.5,4531680,2922.03,4383.04,123.98,185.97,110.39,165.59
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,1,9063360,5844.05,8766.08,247.96,371.94,220.79,331.18
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,2,18126720,11688.11,17532.16,495.93,743.89,441.58,662.37
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,3,27190080,17532.16,26298.25,743.89,1115.83,662.37,993.55
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,4,36253440,23376.22,35064.33,991.85,1487.78,883.15,1324.73
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,10,90633600,58440.55,87660.82,2479.63,3719.45,2207.88,3311.83
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,12,108760320,70128.65,105192.98,2975.56,4463.34,2649.46,3974.19
+P2W hop (measured avg incl. funding txs),644.8,"sustained: best 60 min (L4, Fri 21:57)",2517.6,7754,True,32.5,24,217520640,140257.31,210385.96,5951.12,8926.68,5298.92,7948.38
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,0.5,2552220,1645.67,2468.51,69.83,104.74,62.17,93.26
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,1,5104440,3291.34,4937.01,139.65,209.48,124.35,186.52
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,2,10208880,6582.69,9874.03,279.3,418.96,248.69,373.04
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,3,15313320,9874.03,14811.04,418.96,628.43,373.04,559.56
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,4,20417760,13165.37,19748.06,558.61,837.91,497.39,746.08
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,10,51044400,32913.43,49370.14,1396.52,2094.78,1243.47,1865.2
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,12,61253280,39496.11,59244.17,1675.82,2513.73,1492.16,2238.24
+P2W hop (measured avg incl. funding txs),644.8,sustained: whole-test loaded average,1417.9,7754,True,18.3,24,122506560,78992.23,118488.34,3351.64,5027.46,2984.33,4476.49
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,0.5,7655040,13410.86,20116.3,569.02,853.53,506.66,759.99
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,1,15310080,26821.73,40232.59,1138.05,1707.07,1013.32,1519.99
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,2,30620160,53643.46,80465.19,2276.09,3414.14,2026.65,3039.97
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,3,45930240,80465.19,120697.78,3414.14,5121.21,3039.97,4559.96
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,4,61240320,107286.92,160930.37,4552.18,6828.28,4053.3,6079.95
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,10,153100800,268217.29,402325.94,11380.46,17070.69,10133.25,15199.87
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,12,183720960,321860.75,482791.12,13656.55,20484.83,12159.9,18239.85
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 1 min (L1, Fri 01:24:46)",4252.8,2854,False,149.0,24,367441920,643721.5,965582.25,27313.1,40969.65,24319.8,36479.7
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,0.5,6691140,11722.21,17583.31,497.37,746.06,442.87,664.3
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,1,13382280,23444.42,35166.62,994.75,1492.12,885.73,1328.6
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,2,26764560,46888.83,70333.25,1989.49,2984.24,1771.46,2657.19
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,3,40146840,70333.25,105499.87,2984.24,4476.36,2657.19,3985.79
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,4,53529120,93777.67,140666.5,3978.99,5968.48,3542.92,5314.38
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,10,133822800,234444.16,351666.24,9947.47,14921.2,8857.3,13285.95
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,12,160587360,281333.0,421999.49,11936.96,17905.44,10628.76,15943.14
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"peak 10 min (L1, Fri 01:16:11)",3717.3,2854,False,130.2,24,321174720,562665.99,843998.99,23873.92,35810.88,21257.52,31886.28
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,0.5,4531680,7939.05,11908.58,336.85,505.28,299.94,449.91
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,1,9063360,15878.1,23817.15,673.71,1010.56,599.87,899.81
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,2,18126720,31756.2,47634.3,1347.42,2021.12,1199.75,1799.62
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,3,27190080,47634.3,71451.45,2021.12,3031.69,1799.62,2699.44
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,4,36253440,63512.4,95268.6,2694.83,4042.25,2399.5,3599.25
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,10,90633600,158781.0,238171.51,6737.08,10105.62,5998.75,8998.12
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,12,108760320,190537.2,285805.81,8084.49,12126.74,7198.5,10797.74
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,"sustained: best 60 min (L4, Fri 21:57)",2517.6,2854,True,88.2,24,217520640,381074.41,571611.61,16168.99,24253.48,14396.99,21595.49
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,0.5,2552220,4471.23,6706.85,189.71,284.57,168.92,253.38
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,1,5104440,8942.47,13413.7,379.43,569.14,337.85,506.77
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,2,10208880,17884.94,26827.41,758.86,1138.29,675.69,1013.54
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,3,15313320,26827.41,40241.11,1138.29,1707.43,1013.54,1520.31
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,4,20417760,35769.87,53654.81,1517.72,2276.57,1351.39,2027.08
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,10,51044400,89424.68,134137.03,3794.29,5691.43,3378.46,5067.7
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,12,61253280,107309.62,160964.43,4553.15,6829.72,4054.16,6081.24
+"signed P2PK 1-in-1-out (SMX, measured)",1751.9,sustained: whole-test loaded average,1417.9,2854,True,49.7,24,122506560,214619.24,321928.86,9106.29,13659.44,8108.31,12162.47
