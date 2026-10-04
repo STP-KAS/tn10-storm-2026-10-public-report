@@ -1,5 +1,7 @@
 # Methodology
 
+> **Mainnet labels (added 4 Oct 2026).** Kaspa Testnet-10 only. Every statement about mainnet in this file now carries a label: **A** = shown on TN10, backed by our own measured data (TN10 only, never proof for mainnet); **B** = plausible for mainnet but unsure, reason given; **C** = unknown, needs more testing and review. Claims, evidence and the tests still needed: [TN10 storms: what they do and do not say about a mainnet storm](TN10-STORMS-MAINNET-IMPLICATIONS-2026-10-04.md).
+
 All times are CEST (UTC+2) unless marked UTC. "Box" = stp's single test machine (8 vCPU, 16 GB RAM, 126 GB disk) running TN10 node **n0** (kaspad 2.1.0), the storm runners and two CPU miners. "Desk" = Grok Build's load from stp's desk PC (`C:\Users\Fermi\...`) through public TN10 wRPC nodes.
 
 ## 1. Sources
@@ -63,6 +65,8 @@ Raw logs are not published: they hold host names, addresses and operational deta
 
 ## 6. Mainnet formula (`mainnet_scenarios.py`)
 
+Everything this formula produces is **B**: arithmetic on measured TN10 counts and mainnet parameters, not a mainnet measurement.
+
 ```
 cost_KAS   = txs × mass_g × feerate_sompi_per_g ÷ 1e8
 txs        = tps × 3600 × hours
@@ -83,7 +87,7 @@ fiat       = cost_KAS × Kraken last trade (USD 0.04243 @ 15:57:59 UTC, EUR 0.03
 - n0 was wiped and resynced on Sat 3 Oct; the history exists only in the logs.
 - The box copy of the desk log ends Thu 23:23. The desk file was summed later; see §9. The `accepted` field is a submit result.
 - Indexer counts are unreliable during the L4 freeze.
-- TN10 mining share changed which fees came back to stp; it does not change gross cost, and it does not exist for a mainnet sender without hashrate.
+- TN10 mining share changed which fees came back to stp; it does not change gross cost, and it does not exist for a mainnet sender without hashrate (**B**, protocol logic).
 
 ## 8. Re-running
 

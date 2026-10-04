@@ -1,5 +1,7 @@
 # TN10 stress test, 1–3 Oct 2026: public report
 
+> **Mainnet labels (added 4 Oct 2026).** Kaspa Testnet-10 only. Every statement about mainnet in this file now carries a label: **A** = shown on TN10, backed by our own measured data (TN10 only, never proof for mainnet); **B** = plausible for mainnet but unsure, reason given; **C** = unknown, needs more testing and review. Claims, evidence and the tests still needed: [TN10 storms: what they do and do not say about a mainnet storm](TN10-STORMS-MAINNET-IMPLICATIONS-2026-10-04.md).
+
 **Kaspa Testnet-10 (TN10) only. Nothing in this test touched mainnet.** The mainnet section is arithmetic on the measured TN10 numbers.
 
 Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok Bot on stp's box, from the box's own logs. A desk check was added later the same day from the desk's own logs. It does not replace the box figures. **All times are CEST (UTC+2).** Every number names the file or script it came from. Anything worked out rather than read is marked *(inference)*. Anything that could not be checked is marked **UNVERIFIED**. The scripts and the small derived CSVs are in [`data/`](data/). How each number was computed is in [`methodology.md`](methodology.md).
@@ -20,7 +22,7 @@ Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok
 | Desk sender `accepted` field, recomputed | 15,697,431 through Fri 09:40:33; 15,743,212 through Fri 12:03:07 | `data/desk_batch_hours.csv`. Submit result, not a virtual-chain inclusion |
 | stp's block share | 50–63% while the box miners ran; 25% over the whole first night | `data/block_share_*.csv` |
 | Public API under load | Lagged up to 11.7 min on Thursday, and **froze for about 85 min** on Friday night (HTTP 503). **Every episode we saw end was back to normal within 2–5 min of its last bad sample** (two ended inside sampler gaps), much better than the 25 Sep test, when the same API's indexer stayed frozen for at least 3 days 15 hours ([below](#api-recovery-vs-earlier-tests)) | `data/api_*.csv` |
-| Mainnet cost of the whole test, same txs at 100 sompi/g | **45,464 KAS** (USD 1,929). At 150 sompi/g: 68,195 KAS (USD 2,894) | `data/mainnet_actual_test.csv` |
+| Mainnet cost of the whole test, same txs at 100 sompi/g (**B**: arithmetic, not measured) | **45,464 KAS** (USD 1,929). At 150 sompi/g: 68,195 KAS (USD 2,894) | `data/mainnet_actual_test.csv` |
 
 ## What we're sure of / what we're not sure of
 
@@ -34,8 +36,8 @@ Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok
 | stp's block share 50–63% while the box miners ran (L1 P2W 60.3%, L2 62.8%, L3 58.1%, L4 52.6%), 25.1% over the first night, 29.7% before the storm | `data/block_share_legs.csv`, `data/block_share_sampler2.csv` |
 | Public API: lag up to 704 s on Thursday; full freeze ≈22:02–23:28 on Friday (HTTP 503 every sample 22:09–23:27); every episode observed to its end was back to normal 2–5 min after its last bad sample | `data/api_events.csv`, `data/api_windows_vs_load.csv` |
 | Earlier test (25 Sep): the same API's indexer froze at 21:55:38 CEST and was still frozen (HTTP 503) on 29 Sep 12:56 CEST | STP-KAS/tn10-indexer-stall-2026-09 `README.md` l.7–9, l.33–36 ([below](#api-recovery-vs-earlier-tests)) |
-| Mainnet parameters: 10 BPS, 500,000 g block mass, minimum relay fee 100 sompi/g; live normal estimate 100 sompi/g on 3 Oct | rusty-kaspa `01b532e`, PR #1004, `data/sources/api.kaspa.org-info-fee-estimate.json` |
-| Mainnet plain cost of the whole test: 45,464 KAS at 100 sompi/g, 68,195 KAS at 150 | `data/mainnet_actual_test.csv` |
+| Mainnet parameters: 10 BPS, 500,000 g block mass, minimum relay fee 100 sompi/g; live normal estimate 100 sompi/g on 3 Oct (reference input from source code and the live API, not a storm result) | rusty-kaspa `01b532e`, PR #1004, `data/sources/api.kaspa.org-info-fee-estimate.json` |
+| Mainnet plain cost of the whole test: 45,464 KAS at 100 sompi/g, 68,195 KAS at 150 (**B**: arithmetic, not measured) | `data/mainnet_actual_test.csv` |
 | Desk batch `accepted` through Fri 09:40:33.393 is 15,697,431 (submitted 16,972,123, rejected 1,274,692). Whole file through Fri 12:03:07: 15,743,212 (submitted 17,415,510, rejected 1,672,298) | `data/desk_batch_hours.csv` |
 | Desk P2W highest printed one-minute virtual-chain match rate is 2,795.6 at Fri 21:33:00. During L4 the highest printed line is 2,698.6 at Fri 22:59:27 | `data/desk_p2w_peaks.csv` |
 | Highest public-node `accepted_tx_s` status line is 24,249 at Fri 15:35:44. That field is a submit-ok rate | `data/desk_submit_ok_peaks.csv` |
@@ -63,7 +65,7 @@ Written Sat 3 Oct 2026, about 18:00 CEST, and reviewed about 18:25 CEST, by Grok
 
 stp's box node **n0** (rusty-kaspa kaspad 2.1.0, TN10, one 8-vCPU Xeon VM with 16 GB RAM and a 126 GB disk; see [Hardware used](#hardware-used)) was loaded by our own index-free runners in four legs. Grok Build sent extra load from stp's desk PC through public TN10 nodes, using the wallet `kaspatest:qp4jge54…`.
 
-- **Runners.** At first these were "SMX": signed 1-in-1-out P2PK hops of about 1,752 g. From Thu 21:42 they were "P2W": unsigned 1-in-1-out hops between pay-to-script-hash lane addresses whose redeem script is `push4(id) OP_DROP OP_TRUE`, about 643 g each (`storm-p2w-runner.mjs`). P2W outputs are **anyone-can-spend**. That was fine for throwaway testnet coins. It matters for the mainnet section.
+- **Runners.** At first these were "SMX": signed 1-in-1-out P2PK hops of about 1,752 g. From Thu 21:42 they were "P2W": unsigned 1-in-1-out hops between pay-to-script-hash lane addresses whose redeem script is `push4(id) OP_DROP OP_TRUE`, about 643 g each (`storm-p2w-runner.mjs`). P2W outputs are **anyone-can-spend**. That was fine for throwaway testnet coins. It matters for the mainnet section: a real mainnet sender could not safely use this shape (**B**, protocol logic).
 - **Funding.** The runners were funded from the coinbase outputs of stp's TN10 mining address `kaspatest:qzffl5…`.
 - **Fees.** The feerate was a multiple of n0's own fee estimate. It was 3× and floating until the pause at Fri 00:10. After the restart it was a fixed 6,000 sompi/g (30×) from 01:09:50 to 01:26:51, when the fee-float guard cut it to 3×. From 01:33:41 it was a flat 2× capped at 400 sompi/g (`feerate.jsonl`, `run/timeline.md`).
 
@@ -192,7 +194,7 @@ Source: n0 kaspad log, `Processed N blocks … (M transactions …)` every 10 s,
 
 **The 60–70% claim.** stp's own blocks were 50–63% of TN10 blocks in the windows where his box miners were running. They were **never 70%**. Over the whole first night they were 25%, because the box miners were off after 01:32 and desk blocks through n0 almost stopped after Thu 21:28. **So "60–70%" is not supported. "About 50–63% while the box miners ran, 25% across leg 1" is.**
 
-**Fee recapture on TN10 (inference).** A miner collects the fees of the transactions in the blocks it mines. Multiplying each window's fees by stp's block share gives about **204,740 tKAS back to stp's address, 56.6% of the fees, and a net TN10 fee cost of about 157,074 tKAS** (`data/fee_recapture_estimate.csv`). The fee-weighted share (56.6%) is far above the night-long block share (25%) because most fees were paid while the box miners ran. This estimate assumes our txs were spread over all miners' blocks in proportion to block share. The logs suggest our txs actually sat mostly in our own blocks: inclusion collapsed when the box miners stopped even though blocks were mostly empty. If so, the real recapture was higher. Per-block fee attribution was not logged, so this is **UNVERIFIED**. **None of this applies to mainnet** (below).
+**Fee recapture on TN10 (inference).** A miner collects the fees of the transactions in the blocks it mines. Multiplying each window's fees by stp's block share gives about **204,740 tKAS back to stp's address, 56.6% of the fees, and a net TN10 fee cost of about 157,074 tKAS** (`data/fee_recapture_estimate.csv`). The fee-weighted share (56.6%) is far above the night-long block share (25%) because most fees were paid while the box miners ran. This estimate assumes our txs were spread over all miners' blocks in proportion to block share. The logs suggest our txs actually sat mostly in our own blocks: inclusion collapsed when the box miners stopped even though blocks were mostly empty. If so, the real recapture was higher. Per-block fee attribution was not logged, so this is **UNVERIFIED**. **None of this applies to a mainnet sender without hashrate** (below; **B**, protocol logic, not tested).
 
 ### 4. Public API (api-tn10.kaspa.org)
 
@@ -377,10 +379,12 @@ stp said it "sometimes reached ~5k TPS". What the data shows:
 
 ## What this means for mainnet
 
+**Labels for this section.** The cost and capacity figures below are **B**: arithmetic on the measured TN10 counts and on mainnet parameters read from source code, not a mainnet measurement. They assume the floor feerate gets included, no fee war, mainnet relay policy accepting these shapes, a fixed price, and no fee coming back. How a real mainnet network (many nodes, miners we do not control, a real fee market) would handle the same flood is **C**: never tested. The mainnet parameters are reference inputs, not storm results.
+
 **Headline: the plain storm cost.** Same tx count and same measured mass, priced at **(a) the mainnet normal feerate, 100 sompi/gram** and **(b) priority, 1.5× = 150 sompi/gram**.
 
-- **No fee recapture.** A mainnet sender without hashrate gets nothing back.
-- **No fee-market or bidding-war escalation model.** This was left out on purpose. stp's call: sustaining this much compute on mainnet is not realistic anyway, so the floor price is the meaningful number.
+- **No fee recapture.** A mainnet sender without hashrate gets nothing back (**B**, protocol logic).
+- **No fee-market or bidding-war escalation model.** This was left out on purpose. stp's call: sustaining this much compute on mainnet is not realistic anyway, so the floor price is the meaningful number. How a fee war would change the cost is therefore **C**: not modelled.
 
 **Mainnet parameters used** (checked Sat 3 Oct 2026, 15:54–15:59 UTC):
 
@@ -405,7 +409,7 @@ The right-hand column is the side note: TN10 sompi = mainnet sompi, so the fees 
 
 The shape is the P2W hop the peaks were measured with: 644.8 g including funding txs.
 
-**peak 1 min (L1, Fri 01:24:46): 4,252.8 tx/s, P2W hop (measured avg incl. funding txs) 644.8 g** — mainnet capacity for this shape 7,754 tx/s; uses 54.8% of block mass; fits: yes
+**peak 1 min (L1, Fri 01:24:46): 4,252.8 tx/s, P2W hop (measured avg incl. funding txs) 644.8 g** — mainnet capacity for this shape 7,754 tx/s; uses 54.8% of block mass; fits: yes (**B**, capacity arithmetic)
 
 | Duration | Txs | KAS @ normal 100 sompi/g | KAS @ priority 150 sompi/g | USD normal | USD priority | EUR normal | EUR priority |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -418,7 +422,7 @@ The shape is the P2W hop the peaks were measured with: 644.8 g including funding
 | 12 h | 183,720,960 | 118,463 | 177,695 | 5,026 | 7,540 | 4,476 | 6,713 |
 | 24 h | 367,441,920 | 236,927 | 355,390 | 10,053 | 15,079 | 8,951 | 13,427 |
 
-**sustained: best 60 min (L4, Fri 21:57): 2,517.6 tx/s, P2W hop (measured avg incl. funding txs) 644.8 g** — mainnet capacity for this shape 7,754 tx/s; uses 32.5% of block mass; fits: yes
+**sustained: best 60 min (L4, Fri 21:57): 2,517.6 tx/s, P2W hop (measured avg incl. funding txs) 644.8 g** — mainnet capacity for this shape 7,754 tx/s; uses 32.5% of block mass; fits: yes (**B**, capacity arithmetic)
 
 | Duration | Txs | KAS @ normal 100 sompi/g | KAS @ priority 150 sompi/g | USD normal | USD priority | EUR normal | EUR priority |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -448,15 +452,15 @@ All rate × shape combinations, 1 h and 24 h. The 30 min to 24 h rows for every 
 
 **Capacity.**
 
-- Every measured rate fits on mainnet with the P2W shape. The 1-min peak uses 55% of mainnet block mass.
-- With properly signed txs (~1,752 g), mainnet carries at most **2,854 tx/s**. The two peak rates (4,253 and 3,717) **would not fit**. Sustained 2,518 would fill 88% of every block.
-- Today mainnet carries about 1 regular tx/s (desk public read, 2 Oct), so blocks are almost empty. With no fee-market model these costs assume the floor feerate gets included.
+- **(B, arithmetic)** Every measured rate fits on mainnet with the P2W shape. The 1-min peak uses 55% of mainnet block mass.
+- **(B, arithmetic)** With properly signed txs (~1,752 g), mainnet carries at most **2,854 tx/s**. The two peak rates (4,253 and 3,717) **would not fit**. Sustained 2,518 would fill 88% of every block.
+- Today mainnet carries about 1 regular tx/s (desk public read, 2 Oct), so blocks are almost empty. With no fee-market model these costs assume the floor feerate gets included (**B**). Whether the floor would still get in during a real flood is **C**.
 
 ### Assumptions
 
 1. **Tx shape and mass.** Mass is the TN10 measurement: P2W 644.8 g average incl. funding txs (runner `massH`/`massF`), SMX 1,751.9 g (from fee ÷ submitted ÷ feerate). Mainnet uses the same mass formula (`MAINNET_PARAMS`: 1 g/byte, 10 g/script-pubkey byte, 1,000 g/sigop).
-2. **Anyone-can-spend lanes.** P2W lanes are anyone-can-spend. On mainnet anyone watching could take the coins sitting in the lanes. This report prices the fee only. An attacker who wants to avoid that would use signed txs: 2.7× the mass and cost, and capped at 2,854 tx/s.
-3. **Policy.** Mainnet mempool policy accepts these shapes the same way TN10 kaspad 2.1.0 did. The minimum relay fee is charged on the larger of compute mass and normalized transient mass; storage mass is not charged ([`mining/src/mempool/check_transaction_standard.rs`](https://github.com/kaspanet/rusty-kaspa/blob/01b532e8b553523216471682649693af92f0fd16/mining/src/mempool/check_transaction_standard.rs) l.67–76).
+2. **Anyone-can-spend lanes.** P2W lanes are anyone-can-spend. On mainnet anyone watching could take the coins sitting in the lanes (**B**, protocol logic). This report prices the fee only. An attacker who wants to avoid that would use signed txs: 2.7× the mass and cost, and capped at 2,854 tx/s.
+3. **Policy.** Mainnet mempool policy accepts these shapes the same way TN10 kaspad 2.1.0 did (**B**: assumption from the source code; not tested on mainnet nodes). The minimum relay fee is charged on the larger of compute mass and normalized transient mass; storage mass is not charged ([`mining/src/mempool/check_transaction_standard.rs`](https://github.com/kaspanet/rusty-kaspa/blob/01b532e8b553523216471682649693af92f0fd16/mining/src/mempool/check_transaction_standard.rs) l.67–76).
 4. **Price.** A flat price for the whole duration: Kraken last trade at 17:58 CEST Sat 3 Oct. A large buy of KAS to fund the fees would move it. Not modelled.
 5. **Fees.** No fee recapture and no fee-market escalation (deliberate, see above). Coins in lanes are not spent, only fees. The lane float itself (tens of thousands of KAS on TN10) is capital, not cost.
 6. **Rates.** "Peak" and "sustained" are box-only rates from one 8-vCPU box. A better-provisioned sender could go higher, up to the capacity column.
@@ -541,7 +545,7 @@ Each item fixes a gap from this run.
 - **What limited it:** block mass, per-connection submit rate, and above all one box's disk and RAM. Every leg ended on a disk or RAM guard. Our own hashrate decided how many of our txs got in.
 - **Mining share:** stp's share was 50–63% while his box miners ran, and 25% over the first night. 60–70% is not supported. On TN10 an estimated ~57% of the fees came back to him.
 - **The public API is the weak point, but it recovered much better than last time.** Thursday it lagged up to ~12 min. Friday night its indexer froze for about 85 minutes (HTTP 503) and the address view of stp's mining address froze with it, while n0 stayed synced. Every stall came under high load (not exactly at our peaks). Each one we could watch to its end cleared within 2–5 minutes of its last bad sample. In the 25 Sep test the same API's indexer stayed frozen for at least 3 days 15 hours. The stream/explorer view was not monitored in either test.
-- **Mainnet, plain cost with nothing back:**
+- **Mainnet, plain cost with nothing back (B: arithmetic, not measured):**
   - The whole test at 100 sompi/g is 45,464 KAS (~USD 1,929). At 150 sompi/g it is 68,195 KAS (~USD 2,894).
-  - Holding the measured 1-min peak with the same light txs for 24 h is ~236,927 KAS (USD ~10,053) at normal, or ~355,390 KAS (USD ~15,079) at priority.
-  - Mainnet could carry that rate with those txs. With properly signed txs it could not: the cap is ~2,854 tx/s.
+  - (**B**, extrapolation: the rate was never held for more than about an hour) Holding the measured 1-min peak with the same light txs for 24 h is ~236,927 KAS (USD ~10,053) at normal, or ~355,390 KAS (USD ~15,079) at priority.
+  - Mainnet could carry that rate with those txs (**B**, capacity arithmetic; real mainnet behaviour under that load is **C**). With properly signed txs it could not: the cap is ~2,854 tx/s.
