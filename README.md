@@ -1,3 +1,9 @@
+> **Experimental. We are just trying this.**
+>
+> Good intentions, shaky hands. STP does not know what he is doing. We test, we write down what we think we saw, and that is the whole product. A number here is not the truth. A chart is not the truth. Any other sentence that sounds sure of itself is not the truth either. Do not count any of it as a claim.
+>
+> [Disclaimer](DISCLAIMER.md)
+
 # TN10 stress test, 1–3 Oct 2026: public report
 
 > **Mainnet labels (added 4 Oct 2026).** Kaspa Testnet-10 only. Every statement about mainnet in this file now carries a label: **A** = shown on TN10, backed by our own measured data (TN10 only, never proof for mainnet); **B** = plausible for mainnet but unsure, reason given; **C** = unknown, needs more testing and review. Claims, evidence and the tests still needed: [TN10 storms: what they do and do not say about a mainnet storm](TN10-STORMS-MAINNET-IMPLICATIONS-2026-10-04.md).
